@@ -1,0 +1,5 @@
+compiler.c.extra_flags=-Ofast -ffunction-sections -fdata-sections -fstrict-aliasing -funroll-loops -flto
+compiler.cpp.extra_flags=-Ofast -ffunction-sections -fdata-sections -fstrict-aliasing -fno-exceptions -fno-rtti -funroll-loops -flto
+compiler.S.extra_flags=-Ofast
+compiler.c.elf.extra_flags=-Wl,--gc-sections -flto
+compiler.libraries.ldflags=-Wl,--gc-sections
