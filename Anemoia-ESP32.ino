@@ -235,7 +235,9 @@ void emulate()
     while (true)
     {
         // Emulation Loop
-        current_frame_time = micros();
+        #ifdef DEBUG
+            current_frame_time = micros();
+        #endif
 
         // Read button input
         nes.controller[0] = 0;
@@ -251,9 +253,11 @@ void emulate()
         // Generate one frame
         nes.clock();
 
-        unsigned long frame_duration = current_frame_time - last_frame_time;
-        float fps = 1000000.0 / frame_duration;
-        Serial.printf("FPS: %.2f\n", fps);
-        last_frame_time = current_frame_time;
+        #ifdef DEBUG
+            unsigned long frame_duration = current_frame_time - last_frame_time;
+            float fps = 1000000.0 / frame_duration;
+            Serial.printf("FPS: %.2f\n", fps);
+            last_frame_time = current_frame_time;
+        #endif
     }
 }
