@@ -359,7 +359,7 @@ IRAM_ATTR void Apu2A03::generateSample()
 
 	// Reset audio buffer index once filled
 	buffer_index++;
-	if (buffer_index >= BUFFER_SIZE) 
+	if (buffer_index >= AUDIO_BUFFER_SIZE) 
     { 
         buffer_index = 0; 
 

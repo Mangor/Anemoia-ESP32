@@ -6,10 +6,13 @@
 
 #include "cartridge.h"
 
-#define BUFFER_SIZE 264
+#define BUFFER_SIZE 256 + 8 + 8
+#define SCANLINE_SIZE 256
+#define SCANLINES_PER_BUFFER 5
 #define TILES_PER_SCANLINE 32
 #define PIXELS_PER_TILE 8
 
+class Bus;
 class Ppu2C02
 {
 public:
@@ -31,6 +34,7 @@ public:
     void incrementY();
     void reset();
 
+    void connectBus(Bus* n) { bus = n; }
     void connectCartridge(Cartridge* cartridge);
     void setMirror(Cartridge::MIRROR mirror);
 
@@ -39,12 +43,17 @@ public:
 
 private:
     Cartridge* cart = nullptr;
+    Bus* bus = nullptr;
+
+    void finishScanline(uint16_t scanline);
 
     static uint16_t scanline_buffer[BUFFER_SIZE];
     static uint8_t scanline_metadata[BUFFER_SIZE];
+    static uint16_t display_buffer[SCANLINE_SIZE * SCANLINES_PER_BUFFER];
     uint8_t nametable[2048];
     uint8_t* ptr_nametable[4];
     uint8_t palette_table[32];
+    uint8_t scanline_counter = 0;
 
     // NTSC Palette in RGB565
     static constexpr uint16_t nes_palette[64] PROGMEM = 
@@ -167,6 +176,7 @@ private:
 public:
     uint8_t* ptr_sprite = (uint8_t*)sprite;
     uint16_t* ptr_buffer = scanline_buffer;
+    static constexpr uint16_t* ptr_display = display_buffer;
 };
 
 inline IRAM_ATTR void Ppu2C02::transferScroll(uint16_t scanline)

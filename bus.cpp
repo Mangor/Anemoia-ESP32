@@ -1,12 +1,12 @@
 #include "bus.h"
 
-uint16_t buffer[256];
 Bus::Bus()
 {
     memset(RAM, 0, sizeof(RAM));
     memset(controller, 0, sizeof(controller));
     memset(controller_state, 0, sizeof(controller_state));
     cpu.connectBus(this);
+    ppu.connectBus(this);
 }
 
 Bus::~Bus()
@@ -165,130 +165,6 @@ IRAM_ATTR void Bus::clock()
     frame_latch = !frame_latch;
 }
 
-//     static uint32_t frame_counter = 0;
-
-//     //PROFILE_BEGIN(total)
-//     if (ppu_scanline < 240)
-//     {
-//         if (system_clock_counter == 1)
-//         {
-//             //PROFILE_BEGIN(scroll);
-//             ppu.transferScroll(ppu_scanline);
-//             //PROFILE_END(scroll);
-
-//             //PROFILE_BEGIN(ppuRender);
-//             //ppu.renderScanline();
-//             //ptr_screen->pushImageDMA(32, ppu_scanline, 256, 1, ppu.ptr_buffer);
-//             //PROFILE_END(ppuRender);
-//         }
-
-//         else if (system_clock_counter == 256)
-//         {
-//             //PROFILE_BEGIN(incrementY);
-//             ppu.incrementY();
-//             //PROFILE_END(incrementY);
-//         }
-//     }
-//    else if (system_clock_counter == 1 && ppu_scanline == 241)
-//     {
-//         //PROFILE_BEGIN(setVBlank);
-//         ppu.setVBlank();
-//         if (ppu.nmi)
-//         {
-//             ppu.nmi = false;
-//             cpu.NMI();
-//         }
-//         //PROFILE_END(setVBlank);
-//     }
-//     else if (system_clock_counter == 1 && ppu_scanline == 261)
-//     {
-//         //PROFILE_BEGIN(clearVBlank);
-//         ppu.clearVBlank();
-//         //PROFILE_END(clearVBlank);
-//     }
-
-
-//     if (system_clock_counter == next_cpu_cycle)
-//     {
-//         next_cpu_cycle += 3;
-//         if (!OAM_DMA_transfer)
-//         {
-//             //PROFILE_BEGIN(cpu);
-//             //cpu.clock();     
-//             //PROFILE_END(cpu);
-//         }
-//         else
-//         {
-//             //PROFILE_BEGIN(dma);
-//             if (OAM_DMA_transfer)
-//             {
-//                 if (OAM_DMA_alignment && (system_clock_counter & 1)) OAM_DMA_alignment = false;
-//                 else 
-//                 {
-//                     if ((system_clock_counter & 1) == 0) OAM_DMA_data = cpuRead(OAM_DMA_page << 8 | OAM_DMA_addr);
-//                     else
-//                     {
-//                         ppu.ptr_sprite[OAM_DMA_addr] = OAM_DMA_data;
-//                         OAM_DMA_addr++;
-//                         if (OAM_DMA_addr == 0x00)
-//                         {
-//                             OAM_DMA_transfer = false;
-//                             OAM_DMA_alignment = true;
-//                         }
-//                     }
-//                 }
-//             }
-//             //PROFILE_END(dma);
-//         }
-//     }
-//     // apu.clock();
-
-//     //if (apu.IRQ) cpu.IRQ();
-
-//     system_clock_counter++;
-//     if (system_clock_counter == 341)
-//     {
-//         system_clock_counter = 0;
-//         next_cpu_cycle -= 341;
-//         ppu_scanline++;
-//         if (ppu_scanline == 262) 
-//         {
-//             ppu_scanline = 0;
-//             frame_counter++;
-
-//             // if (frame_counter % 60 == 0)
-//             // {
-//             //     PROFILE_REPORT(ppuRender);
-//             //     PROFILE_REPORT(cpu);
-//             //     PROFILE_REPORT(scroll);
-//             //     PROFILE_REPORT(dma);
-//             //     PROFILE_REPORT(incrementY);
-//             //     PROFILE_REPORT(setVBlank);
-//             //     PROFILE_REPORT(clearVBlank);
-//             //     PROFILE_REPORT(total);
-
-//             //     PROFILE_PERCENT(ppuRender, total);
-//             //     PROFILE_PERCENT(cpu, total);
-//             //     PROFILE_PERCENT(scroll, total);
-//             //     PROFILE_PERCENT(dma, total);
-//             //     PROFILE_PERCENT(incrementY, total);
-//             //     PROFILE_PERCENT(setVBlank, total);
-//             //     PROFILE_PERCENT(clearVBlank, total);
-
-//             //     PROFILE_RESET(ppuRender);
-//             //     PROFILE_RESET(cpu);
-//             //     PROFILE_RESET(scroll);
-//             //     PROFILE_RESET(dma);
-//             //     PROFILE_RESET(incrementY);
-//             //     PROFILE_RESET(setVBlank);
-//             //     PROFILE_RESET(clearVBlank);
-//             //     PROFILE_RESET(total);
-//             // }
-//         }
-//     }
-//     //PROFILE_END(total);
-//}
-
 IRAM_ATTR void Bus::setPPUMirrorMode(Cartridge::MIRROR mirror)
 {
     ppu.setMirror(mirror);
@@ -311,11 +187,15 @@ void Bus::connectScreen(TFT_eSPI* screen)
     ptr_screen = screen;
 }
 
-inline IRAM_ATTR void Bus::renderScanline(uint16_t scanline)
+inline void Bus::renderScanline(uint16_t scanline)
 {
     ppu.transferScroll(scanline);
     ppu.renderScanline();
     ppu.renderSprites(scanline);
-    ptr_screen->pushImageDMA(32, scanline, 256, 1, ppu.ptr_buffer, buffer);
     ppu.incrementY();
 }
+
+IRAM_ATTR void Bus::renderImage(uint16_t scanline)
+{
+    ptr_screen->pushImageDMA(32, scanline, 256, SCANLINES_PER_BUFFER, ppu.ptr_display);
+} 

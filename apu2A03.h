@@ -6,7 +6,7 @@
 
 #include "driver/i2s.h"
 
-#define BUFFER_SIZE 256
+#define AUDIO_BUFFER_SIZE 256
 
 class Apu2A03
 {
@@ -21,7 +21,7 @@ public:
 	void setDMCBuffer(uint8_t value);
     uint16_t getDMCAddress();
     void resetChannels();
-    int16_t audio_buffer[BUFFER_SIZE * 2];
+    int16_t audio_buffer[AUDIO_BUFFER_SIZE * 2];
 
     uint8_t DMC_sample_byte = 0;
 	bool DMC_DMA_load = false;

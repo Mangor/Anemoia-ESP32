@@ -1,8 +1,10 @@
 #include "ppu2C02.h"
+#include "bus.h"
 
 #define READ_PALETTE(x) palette_table[((x) & 0x1F) ^ (((x) & 0x13) == 0x10 ? 0x10 : 0x00)]
-DMA_ATTR uint16_t Ppu2C02::scanline_buffer[BUFFER_SIZE];
+uint16_t Ppu2C02::scanline_buffer[BUFFER_SIZE];
 uint8_t Ppu2C02::scanline_metadata[BUFFER_SIZE];
+DMA_ATTR uint16_t Ppu2C02::display_buffer[SCANLINE_SIZE * SCANLINES_PER_BUFFER];
 
 static constexpr uint16_t bitplane_lo[256] PROGMEM = 
 {
@@ -216,7 +218,7 @@ IRAM_ATTR void Ppu2C02::renderScanline()
     // Show transparency pixel if not rendering background
     if (!mask.render_background)
     {
-        memset(scanline_buffer, nes_palette[palette_table[0]], BUFFER_SIZE);
+        memset(scanline_buffer, nes_palette[palette_table[0]], BUFFER_SIZE * sizeof(uint16_t));
         return;
     }
 
@@ -282,7 +284,11 @@ IRAM_ATTR void Ppu2C02::renderScanline()
 
 void Ppu2C02::renderSprites(uint16_t scanline)
 {
-    if (!mask.render_sprite) return;
+    if (!mask.render_sprite) 
+    {
+        finishScanline(scanline);
+        return;
+    }
 
     OAM* ptr_sprite_OAM;
     uint8_t sprite_size;
@@ -406,6 +412,7 @@ void Ppu2C02::renderSprites(uint16_t scanline)
     }
 
     ptr_buffer = buffer_offset;
+    finishScanline(scanline);
 }
 
 void Ppu2C02::fakeSpriteHit(uint16_t scanline)
@@ -481,6 +488,17 @@ void Ppu2C02::fakeSpriteHit(uint16_t scanline)
         //         return;
         //     }
         // }
+    }
+}
+
+inline void Ppu2C02::finishScanline(uint16_t scanline)
+{
+    memcpy(ptr_display + (scanline_counter * SCANLINE_SIZE), ptr_buffer, SCANLINE_SIZE * sizeof(uint16_t));
+    scanline_counter++;
+    if (scanline_counter >= SCANLINES_PER_BUFFER) 
+    { 
+        bus->renderImage(scanline - (SCANLINES_PER_BUFFER - 1));
+        scanline_counter = 0;
     }
 }
 

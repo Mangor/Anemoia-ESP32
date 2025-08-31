@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <stdint.h>
+#include "config.h"
 #include "cartridge.h"
 #include "cpu6502.h"
 #include "ppu2C02.h"
@@ -32,6 +33,7 @@ public:
     void clock();
     void OAM_Write(uint8_t addr, uint8_t data);
     uint16_t ppu_scanline = 0;
+    void renderImage(uint16_t scanline);
 
 private:
     void cpuClock();
