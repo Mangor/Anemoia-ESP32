@@ -55,7 +55,7 @@ public:
     uint16_t addr_abs = 0x0000;
     uint16_t addr_rel = 0x0000;
     uint8_t opcode = 0x00;
-    uint8_t cycles = 0;
+    uint16_t cycles = 0;
     uint16_t temp = 0x0000;
 
 private: 
@@ -118,11 +118,7 @@ private:
     void DMC_DMA_Load();
     void DMC_DMA_Reload();
 
-    uint16_t dma_cycles_remaining = 0;
-    uint8_t OAM_DMA_page = 0x00;
-    uint8_t OAM_DMA_addr = 0x00;
-    uint8_t OAM_DMA_data = 0x00;
-    bool OAM_DMA_transfer = false;
+    uint16_t OAM_DMA_page = 0x00;
 };
 
 #endif

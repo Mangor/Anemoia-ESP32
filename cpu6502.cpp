@@ -65,10 +65,13 @@ inline IRAM_ATTR void Cpu6502::write(uint16_t addr, uint8_t data)
 
 IRAM_ATTR void Cpu6502::OAM_DMA(uint8_t page)
 {
-    OAM_DMA_page = page;
-    OAM_DMA_addr = 0x00;
-    OAM_DMA_transfer = true;
-    dma_cycles_remaining = 512;
+    OAM_DMA_page = page << 8;
+    for (int i = 0; i < 256; i++)
+    {
+        OAM_Write(i, read((OAM_DMA_page) | i));
+    }
+
+    cycles += 512;
 }
 
 IRAM_ATTR void Cpu6502::OAM_Write(uint8_t addr, uint8_t data)
@@ -78,7 +81,7 @@ IRAM_ATTR void Cpu6502::OAM_Write(uint8_t addr, uint8_t data)
 
 IRAM_ATTR void Cpu6502::clock()
 {
-    if (!OAM_DMA_transfer && !apu.DMC_DMA_load && !apu.DMC_DMA_reload)
+    if (!apu.DMC_DMA_load && !apu.DMC_DMA_reload)
     {
         if (cycles == 0)
         {
@@ -369,8 +372,6 @@ IRAM_ATTR void Cpu6502::clock()
     }
     else
     {
-        if (OAM_DMA_transfer) OAM_DMA_Tick();
-
         if (apu.DMC_DMA_load) DMC_DMA_Load();
         else if (apu.DMC_DMA_reload) DMC_DMA_Reload();
     }
@@ -382,7 +383,7 @@ IRAM_ATTR void Cpu6502::scanlineClock()
 {
     for (int remaining_cycles = 113; remaining_cycles > 0; remaining_cycles--)
     {
-        if (!OAM_DMA_transfer && !apu.DMC_DMA_load && !apu.DMC_DMA_reload)
+        if (!apu.DMC_DMA_load && !apu.DMC_DMA_reload)
         {
             if (cycles > 0) { cycles--; continue; }
 
@@ -671,26 +672,22 @@ IRAM_ATTR void Cpu6502::scanlineClock()
             if (remaining_cycles >= cycles)
             {
                 remaining_cycles -= (cycles - 1);
-                //for (int i = 0; i < cycles; i++) apu.clock();
                 cycles = 0;
                 continue;
             }
             else
             {
                 cycles -= remaining_cycles;
-                //for (int i = 0; i < remaining_cycles; i++) apu.clock();
                 return;
             }
         }
         else
         {
-            if (OAM_DMA_transfer) OAM_DMA_Tick();
-
             if (apu.DMC_DMA_load) DMC_DMA_Load();
             else if (apu.DMC_DMA_reload) DMC_DMA_Reload();
 
-            //apu.clock();
         }
+        //apu.clock();
     }
 }
 
@@ -712,22 +709,6 @@ void Cpu6502::reset()
 	fetched = 0x00;
 
 	cycles = 8;
-}
-
-inline IRAM_ATTR void Cpu6502::OAM_DMA_Tick()
-{
-    if (dma_cycles_remaining > 0)
-    {
-        if ((dma_cycles_remaining & 1) == 1) OAM_Write(OAM_DMA_addr++, OAM_DMA_data);
-        else OAM_DMA_data = read((OAM_DMA_page << 8) | OAM_DMA_addr);
-
-        dma_cycles_remaining--;
-    }
-    else
-    {
-        OAM_DMA_transfer = false;
-        OAM_DMA_addr = 0;
-    }   
 }
 
 inline IRAM_ATTR void Cpu6502::DMC_DMA_Load()
