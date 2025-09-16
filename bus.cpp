@@ -99,7 +99,7 @@ IRAM_ATTR void Bus::clock()
             if (frame_latch) { renderScanline(ppu_scanline); }
             else { ppu.fakeSpriteHit(ppu_scanline); }
         #endif
-        cpu.scanlineClock();
+        cpu.clock(113);
 
         #ifndef FRAMESKIP
             renderScanline(ppu_scanline + 1);
@@ -107,8 +107,7 @@ IRAM_ATTR void Bus::clock()
             if (frame_latch) { renderScanline(ppu_scanline + 1); }
             else { ppu.fakeSpriteHit(ppu_scanline + 1); }
         #endif
-        cpu.scanlineClock();
-        cpu.clock();
+        cpu.clock(114);
 
         #ifndef FRAMESKIP
             renderScanline(ppu_scanline + 2);
@@ -116,14 +115,13 @@ IRAM_ATTR void Bus::clock()
             if (frame_latch) { renderScanline(ppu_scanline + 2); }
             else { ppu.fakeSpriteHit(ppu_scanline + 2); }
         #endif
-        cpu.scanlineClock();
-        cpu.clock();
+        cpu.clock(114);
     }
 
     // Setup for the next frame
     // Same reason as scanlines 0-239, 2/3 of scanlines will have an extra CPU clock. 
     // Scanline 240
-    cpu.scanlineClock();
+    cpu.clock(113);
 
     // Scanline 241
     ppu.setVBlank();
@@ -132,34 +130,28 @@ IRAM_ATTR void Bus::clock()
         ppu.nmi = false;
         cpu.NMI();
     }
-    cpu.scanlineClock();
-    cpu.clock();
+    cpu.clock(114);
 
     // Scanline 242
-    cpu.scanlineClock();
-    cpu.clock();
+    cpu.clock(114);
 
     // Scanline 243-258
     for (ppu_scanline = 243; ppu_scanline < 259; ppu_scanline += 3)
     {
-        cpu.scanlineClock();
+        cpu.clock(113);
 
-        cpu.scanlineClock();
-        cpu.clock();
+        cpu.clock(114);
 
-        cpu.scanlineClock();
-        cpu.clock();
+        cpu.clock(114);
     }
 
     // Scanline 259-261
-    cpu.scanlineClock();
+    cpu.clock(113);
 
-    cpu.scanlineClock();
-    cpu.clock();
+    cpu.clock(114);
 
     ppu.clearVBlank();
-    cpu.scanlineClock();
-    cpu.clock();
+    cpu.clock(114);
 
 
     frame_latch = !frame_latch;

@@ -33,8 +33,7 @@ public:
 
     void apuWrite(uint16_t addr, uint8_t data);
     uint8_t apuRead(uint16_t addr);
-    void clock();
-    void scanlineClock();
+    void clock(int i);
     void OAM_DMA(uint8_t page);
     void reset();
 
