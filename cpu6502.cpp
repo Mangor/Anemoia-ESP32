@@ -1108,20 +1108,19 @@ inline uint8_t Cpu6502::Instr_XXX()
     return 0;
 }
 
-inline void Cpu6502::IRQ()
+void Cpu6502::IRQ()
 {
     if (GET_FLAG(I) == 0)
     {
         write(0x0100 | SP, (PC >> 8) & 0x00FF);
         write(0x0100 | (uint8_t)(SP - 1), PC & 0x00FF);
 
-        SET_FLAG(B, 0);
-        status |= (U | I);
         write(0x0100 | (uint8_t)(SP - 2), status);
 
-        addr_abs = 0xFFFE;
-        uint8_t low_byte = read(addr_abs);
-        uint8_t high_byte = read(addr_abs + 1);
+        SET_FLAG(I, 1);
+
+        uint8_t low_byte = read(0xFFFE);
+        uint8_t high_byte = read(0xFFFF);
 
         PC = (high_byte << 8) | low_byte;
 
@@ -1135,13 +1134,12 @@ void Cpu6502::NMI()
     write(0x0100 | SP, (PC >> 8) & 0x00FF);
     write(0x0100 | (uint8_t)(SP - 1), PC & 0x00FF);
 
-    SET_FLAG(B, 0);
-    status |= (U | I);
     write(0x0100 | (uint8_t)(SP - 2), status);
 
-    addr_abs = 0xFFFA;
-    uint8_t low_byte = read(addr_abs);
-    uint8_t high_byte = read(addr_abs + 1);
+    SET_FLAG(I, 1);
+
+    uint8_t low_byte = read(0xFFFA);
+    uint8_t high_byte = read(0xFFFB);
 
     PC = (high_byte << 8) | low_byte;
 
