@@ -56,7 +56,7 @@ private:
     uint8_t scanline_counter = 0;
 
     // NTSC Palette in RGB565
-    static constexpr uint16_t nes_palette[64] PROGMEM = 
+    static constexpr uint16_t nes_palette[64] = 
     {
         0x528A, 0x00CA, 0x086C, 0x202C, 0x3009, 0x4024, 0x3840, 0x3080,
         0x1900, 0x0940, 0x0160, 0x0161, 0x0125, 0x0000, 0x0000, 0x0000,

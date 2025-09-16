@@ -1,7 +1,7 @@
 #include "cpu6502.h"
 #include "bus.h"
 
-constexpr uint8_t Cpu6502::instr_cycles[256] PROGMEM = {
+constexpr uint8_t Cpu6502::instr_cycles[256] = {
     7, 6, 2, 8, 3, 3, 5, 5, 3, 2, 2, 2, 4, 4, 6, 6,
     2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,
     6, 6, 2, 8, 3, 3, 5, 5, 4, 2, 2, 2, 4, 4, 6, 6,
@@ -20,7 +20,7 @@ constexpr uint8_t Cpu6502::instr_cycles[256] PROGMEM = {
     2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7
 };
 
-constexpr uint8_t Cpu6502::zn_table[256] PROGMEM = {
+constexpr uint8_t Cpu6502::zn_table[256] = {
     #define ENTRY(v) (((v) == 0 ? Cpu6502::Z : 0) | ((v) & Cpu6502::N))
     ENTRY(0x00), ENTRY(0x01), ENTRY(0x02), ENTRY(0x03), ENTRY(0x04), ENTRY(0x05), ENTRY(0x06), ENTRY(0x07), ENTRY(0x08), ENTRY(0x09), ENTRY(0x0A), ENTRY(0x0B), ENTRY(0x0C), ENTRY(0x0D), ENTRY(0x0E), ENTRY(0x0F),
     ENTRY(0x10), ENTRY(0x11), ENTRY(0x12), ENTRY(0x13), ENTRY(0x14), ENTRY(0x15), ENTRY(0x16), ENTRY(0x17), ENTRY(0x18), ENTRY(0x19), ENTRY(0x1A), ENTRY(0x1B), ENTRY(0x1C), ENTRY(0x1D), ENTRY(0x1E), ENTRY(0x1F),
