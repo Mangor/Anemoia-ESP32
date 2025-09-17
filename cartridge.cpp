@@ -62,6 +62,7 @@ Cartridge::Cartridge(const char* filename)
         case 0: mapper = createMapper000(number_PRG_banks, number_CHR_banks, this); break;
         case 1: mapper = createMapper001(number_PRG_banks, number_CHR_banks, this); break;
         case 2: mapper = createMapper002(number_PRG_banks, number_CHR_banks, this); break;
+        case 4: mapper = createMapper004(number_PRG_banks, number_CHR_banks, this); break;
     }
 }
 
@@ -94,6 +95,12 @@ IRAM_ATTR bool Cartridge::ppuWrite(uint16_t addr, uint8_t data)
 IRAM_ATTR uint8_t* Cartridge::ppuReadPtr(uint16_t addr)
 {
 	return mapper.vtable->ppuReadPtr(&mapper, addr);
+}
+
+void Cartridge::ppuScanline()
+{
+    if (mapper.vtable->scanline)
+        mapper.vtable->scanline(&mapper);
 }
 
 IRAM_ATTR void Cartridge::loadPRGBank(uint8_t* bank, uint16_t size, uint32_t offset)

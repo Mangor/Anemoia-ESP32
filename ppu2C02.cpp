@@ -412,6 +412,7 @@ void Ppu2C02::renderSprites(uint16_t scanline)
     }
 
     ptr_buffer = buffer_offset;
+    cart->ppuScanline();
     finishScanline(scanline);
 }
 
@@ -489,6 +490,7 @@ void Ppu2C02::fakeSpriteHit(uint16_t scanline)
         //     }
         // }
     }
+    cart->ppuScanline();
 }
 
 inline void Ppu2C02::finishScanline(uint16_t scanline)
