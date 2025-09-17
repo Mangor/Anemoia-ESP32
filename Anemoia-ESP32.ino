@@ -66,8 +66,6 @@ void setup()
     // );
 }
 
-unsigned long last_frame_time = 0;
-unsigned long current_frame_time = 0;
 void loop() 
 {
     emulate();
@@ -226,12 +224,24 @@ void selectGame()
     }
 }
 
+
+#ifdef DEBUG
+    unsigned long last_frame_time = 0;
+    unsigned long current_frame_time = 0;
+    unsigned long total_frame_time = 0;
+    unsigned long frame_count = 0;
+#endif
 void emulate()
 {
     Bus nes;
     nes.insertCartridge(cart);
     nes.connectScreen(&screen);
     nes.reset();
+
+    #ifdef DEBUG
+        last_frame_time = micros();
+    #endif
+
     while (true)
     {
         // Emulation Loop
@@ -254,9 +264,18 @@ void emulate()
         nes.clock();
 
         #ifdef DEBUG
-            unsigned long frame_duration = current_frame_time - last_frame_time;
-            float fps = 1000000.0 / frame_duration;
-            Serial.printf("FPS: %.2f\n", fps);
+            unsigned long frame_duration = current_frame_time - last_frame_time; 
+            total_frame_time += frame_duration;
+            frame_count++;
+
+            if ((frame_count & 63) == 0)
+            {
+                float avg_fps = (1000000.0 * frame_count) / total_frame_time;
+                Serial.printf("FPS: %.2f\n", avg_fps);
+                total_frame_time = 0;
+                frame_count = 0;
+            }
+
             last_frame_time = current_frame_time;
         #endif
     }

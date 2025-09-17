@@ -2,6 +2,7 @@
 #define CONFIG_H
 
 #define FRAMESKIP
+#define DEBUG
 
 // MicroSD card module Pins
 #define SD_MOSI_PIN 13
