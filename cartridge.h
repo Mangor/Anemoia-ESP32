@@ -36,6 +36,7 @@ public:
     void loadCHRBank(uint8_t* bank, uint16_t size, uint32_t offset);
     void setMirrorMode(MIRROR mirror);
     void connectBus(Bus* n) { bus = n; }
+    void IRQ();
 
     uint8_t hardware_mirror;
     uint8_t mirror = HORIZONTAL;

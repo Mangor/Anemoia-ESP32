@@ -210,7 +210,8 @@ const MapperVTable Mapper001_vtable = {
     Mapper001_cpuWrite,
     Mapper001_ppuRead,
     Mapper001_ppuWrite,
-    Mapper001_ppuReadPtr
+    Mapper001_ppuReadPtr,
+    nullptr,    
 };
 
 Mapper createMapper001(uint8_t PRG_banks, uint8_t CHR_banks, Cartridge* cart)

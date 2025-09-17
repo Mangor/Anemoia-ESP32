@@ -1,6 +1,7 @@
 #ifndef MAPPER_H
 #define MAPPER_H
 
+#include <cstring>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -29,6 +30,7 @@ struct MapperVTable
     bool (*ppuRead)(Mapper* mapper, uint16_t addr, uint8_t& data);
     bool (*ppuWrite)(Mapper* mapper, uint16_t addr, uint8_t data);
     uint8_t* (*ppuReadPtr)(Mapper* mapper, uint16_t addr);
+    void (*scanline)(Mapper* mapper);
 };
 
 struct Bank

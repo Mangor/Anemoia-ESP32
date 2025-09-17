@@ -31,6 +31,7 @@ public:
     void reset();
     void resetClock();
     void clock();
+    void IRQ();
     void OAM_Write(uint8_t addr, uint8_t data);
     uint16_t ppu_scanline = 0;
     void renderImage(uint16_t scanline);

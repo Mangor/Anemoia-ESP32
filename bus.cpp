@@ -191,3 +191,8 @@ IRAM_ATTR void Bus::renderImage(uint16_t scanline)
 {
     ptr_screen->pushImageDMA(32, scanline, 256, SCANLINES_PER_BUFFER, ppu.ptr_display);
 } 
+
+IRAM_ATTR void Bus::IRQ()
+{
+    cpu.IRQ();
+}

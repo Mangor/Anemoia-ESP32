@@ -112,3 +112,8 @@ IRAM_ATTR void Cartridge::setMirrorMode(MIRROR mirror)
 {
     bus->setPPUMirrorMode(mirror);
 }
+
+void Cartridge::IRQ()
+{
+    bus->IRQ();
+}
