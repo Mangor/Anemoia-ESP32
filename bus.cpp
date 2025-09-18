@@ -84,7 +84,7 @@ void Bus::resetClock()
 
 IRAM_ATTR void Bus::clock()
 {
-    // 1 frame == 321 dots * 261 scanlines
+    // 1 frame == 341 dots * 261 scanlines
     // Visible scanlines 0-239
     
     // Rendering 3 scanlines at a time because 1 CPU clock == 3 PPU clocks
@@ -125,11 +125,6 @@ IRAM_ATTR void Bus::clock()
 
     // Scanline 241
     ppu.setVBlank();
-    if (ppu.nmi)
-    {
-        ppu.nmi = false;
-        cpu.NMI();
-    }
     cpu.clock(114);
 
     // Scanline 242
@@ -195,4 +190,9 @@ IRAM_ATTR void Bus::renderImage(uint16_t scanline)
 IRAM_ATTR void Bus::IRQ()
 {
     cpu.IRQ();
+}
+
+IRAM_ATTR void Bus::NMI()
+{
+    cpu.NMI();
 }

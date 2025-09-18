@@ -183,7 +183,7 @@ IRAM_ATTR uint8_t Ppu2C02::cpuRead(uint16_t addr)
 IRAM_ATTR void Ppu2C02::setVBlank()
 {
     status.VBlank = 1;
-    nmi = control.Vblank_NMI;
+    if (control.Vblank_NMI) bus->NMI();
 }
 
 IRAM_ATTR void Ppu2C02::clearVBlank()
