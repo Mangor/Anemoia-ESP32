@@ -246,7 +246,7 @@ IRAM_ATTR void Ppu2C02::renderScanline()
         ptr_pattern_tile = cart->ppuReadPtr(offset + (tile_index << 4)); 
 
         // draw to framebuffer
-        uint32_t pattern = bitplane_hi[ptr_pattern_tile[8]] | bitplane_lo[ptr_pattern_tile[0]];
+        uint16_t pattern = bitplane_hi[ptr_pattern_tile[8]] | bitplane_lo[ptr_pattern_tile[0]];
         uint16_t tile_palette[4];
         tile_palette[0] = bg_color;
         for (int t = 1; t < 4; t++) tile_palette[t] = nes_palette[READ_PALETTE(attribute + t)];
@@ -339,7 +339,7 @@ void Ppu2C02::renderSprites(uint16_t scanline)
         else ptr_tile += y_offset;
 
         // Draw to buffer
-        uint32_t pattern = bitplane_hi[ptr_tile[8]] | bitplane_lo[ptr_tile[0]];
+        uint16_t pattern = bitplane_hi[ptr_tile[8]] | bitplane_lo[ptr_tile[0]];
         if (pattern)
         {
             uint8_t pixel[8];
@@ -452,7 +452,7 @@ void Ppu2C02::fakeSpriteHit(uint16_t scanline)
     else ptr_tile += y_offset;
 
     // Draw to buffer
-    uint32_t pattern = bitplane_hi[ptr_tile[8]] | bitplane_lo[ptr_tile[0]];
+    uint16_t pattern = bitplane_hi[ptr_tile[8]] | bitplane_lo[ptr_tile[0]];
     if (pattern)
     {
         status.sprite_zero_hit = true;
