@@ -18,7 +18,7 @@
 
 ## Compatibility
 
-As of now, Anemoia-ESP32 has implemented four major memory mappers, totalling to around 50% of the entire NES game catalogue. 
+As of now, Anemoia-ESP32 has implemented four major memory mappers, totalling to around 73% of the entire NES game catalogue. 
 Feel free to open an issue if a game has glitches or fails to boot.
 
 ---
