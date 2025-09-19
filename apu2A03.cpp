@@ -240,54 +240,40 @@ IRAM_ATTR void Apu2A03::clock()
 
 	quarter_frame_clock = false;
 	half_frame_clock = false;
-	if (four_step_sequence_mode)
-	{
-        switch (clock_counter)
+    switch (clock_counter)
+    {
+    case 7457:
+        quarter_frame_clock = true;
+        break;
+
+    case 14913:
+        quarter_frame_clock = true;
+        half_frame_clock = true;
+        break;
+
+    case 22371:
+        quarter_frame_clock = true;
+        break;
+
+    case 29829:
+        if (four_step_sequence_mode)
         {
-        case 7457:
-            quarter_frame_clock = true;
-            break;
-
-        case 14913:
-            quarter_frame_clock = true;
-            half_frame_clock = true;
-            break;
-
-        case 22371:
-            quarter_frame_clock = true;
-            break;
-
-        case 29829:
             if (!interrupt_inhibit) IRQ = true;
             quarter_frame_clock = true;
             half_frame_clock = true;
             clock_counter = 1;
         }
-	}
-	else
-	{
-        switch (clock_counter)
+        break;
+
+    case 37281:
+        if (!four_step_sequence_mode)
         {
-        case 7457:
-            quarter_frame_clock = true;
-            break;
-        
-        case 14913:
-            quarter_frame_clock = true;
-            half_frame_clock = true;
-            break;
-
-        case 22371:
-            quarter_frame_clock = true;
-            break;
-
-        case 37281:
             quarter_frame_clock = true;
             half_frame_clock = true;
             clock_counter = 1;
-            break;
         }
-	}
+        break;
+    }
 
 	// Clock envelope and triangle linear counter
 	if (quarter_frame_clock)
@@ -333,10 +319,10 @@ IRAM_ATTR void Apu2A03::clock()
 	// Put sound channels output into audio buffers
 	// Generate sample evey 40.584421768 clocks
 	// 1.789773 MHz / 44100 Hz
-	if (pulse_hz > 1789773)
+	if (pulse_hz > 1789773 / 2)
 	{
 		generateSample();
-		pulse_hz -= 1789773;
+		pulse_hz -= 1789773 / 2;
 	}
 	pulse_hz += 44100;
 	clock_counter++;
@@ -348,11 +334,11 @@ IRAM_ATTR void Apu2A03::generateSample()
     audio_buffer[index] = 0;
 	audio_buffer[index] += pulse1.seq.output ? pulse1.env.output : 0;
 	audio_buffer[index] += pulse2.seq.output ? pulse2.env.output: 0;
-	//audio_buffer[index] += triangle.seq.output;
-	//audio_buffer[index] += DMC.output_unit.output_level;
+	audio_buffer[index] += triangle.seq.output;
+	audio_buffer[index] += DMC.output_unit.output_level;
 
-	//if (!(noise.shift_register & 0x01) && noise.len_counter.timer > 0)
-		//audio_buffer[index] += noise.env.output;
+	if (!(noise.shift_register & 0x01) && noise.len_counter.timer > 0)
+		audio_buffer[index] += noise.env.output;
 
 	if (audio_buffer[index] > 127) audio_buffer[index] = 127;
     audio_buffer[index] <<= 8;
