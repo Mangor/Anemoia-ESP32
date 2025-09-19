@@ -285,7 +285,7 @@ IRAM_ATTR void Apu2A03::clock()
 
 			soundChannelLengthCounterClock(triangle.len_counter);
 			soundChannelLengthCounterClock(noise.len_counter);
-            clock_counter = 1;
+            clock_counter = 0;
         }
         break;
 
@@ -305,7 +305,7 @@ IRAM_ATTR void Apu2A03::clock()
 
 			soundChannelLengthCounterClock(triangle.len_counter);
 			soundChannelLengthCounterClock(noise.len_counter);
-            clock_counter = 1;
+            clock_counter = 0;
         }
         break;
     }
