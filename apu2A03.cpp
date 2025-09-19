@@ -229,33 +229,31 @@ IRAM_ATTR uint8_t Apu2A03::cpuRead(uint16_t addr)
 IRAM_ATTR void Apu2A03::clock()
 {
     // Clock all sound channels
-	if ((clock_counter & 1) == 0)
-	{
-		pulseChannelClock(pulse1.seq, pulse1_enable);
-		pulseChannelClock(pulse2.seq, pulse2_enable);
-		noiseChannelClock(noise, noise_enable);
-		DMCChannelClock(DMC, DMC_enable);
-	}
+    pulseChannelClock(pulse1.seq, pulse1_enable);
+    pulseChannelClock(pulse2.seq, pulse2_enable);
+    noiseChannelClock(noise, noise_enable);
+    DMCChannelClock(DMC, DMC_enable);
+	triangleChannelClock(triangle, triangle_enable);
 	triangleChannelClock(triangle, triangle_enable);
 
 	quarter_frame_clock = false;
 	half_frame_clock = false;
     switch (clock_counter)
     {
-    case 7457:
+    case 3728:
         quarter_frame_clock = true;
         break;
 
-    case 14913:
+    case 7456:
         quarter_frame_clock = true;
         half_frame_clock = true;
         break;
 
-    case 22371:
+    case 11185:
         quarter_frame_clock = true;
         break;
 
-    case 29829:
+    case 14914:
         if (four_step_sequence_mode)
         {
             if (!interrupt_inhibit) IRQ = true;
@@ -265,7 +263,7 @@ IRAM_ATTR void Apu2A03::clock()
         }
         break;
 
-    case 37281:
+    case 18640:
         if (!four_step_sequence_mode)
         {
             quarter_frame_clock = true;
@@ -317,12 +315,12 @@ IRAM_ATTR void Apu2A03::clock()
 	// }
 
 	// Put sound channels output into audio buffers
-	// Generate sample evey 40.584421768 clocks
-	// 1.789773 MHz / 44100 Hz
-	if (pulse_hz > 1789773 / 2)
+	// Generate sample evey 20.29221088 clocks
+	// (1.789773 MHz / 2) / 44100 Hz
+	if (pulse_hz > 894886)
 	{
 		generateSample();
-		pulse_hz -= 1789773 / 2;
+		pulse_hz -= 894886;
 	}
 	pulse_hz += 44100;
 	clock_counter++;
