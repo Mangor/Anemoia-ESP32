@@ -39,8 +39,6 @@ private:
     uint32_t clock_counter = 0;
 	uint32_t pulse_hz = 0;
 	bool four_step_sequence_mode = true;
-	bool quarter_frame_clock = false;
-	bool half_frame_clock = false;
 
     // double pulse_out = 0.0;
 	// double tnd_out = 0.0;

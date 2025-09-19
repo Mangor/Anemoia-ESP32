@@ -236,55 +236,21 @@ IRAM_ATTR void Apu2A03::clock()
 	triangleChannelClock(triangle, triangle_enable);
 	triangleChannelClock(triangle, triangle_enable);
 
-	quarter_frame_clock = false;
-	half_frame_clock = false;
     switch (clock_counter)
     {
     case 3728:
-        quarter_frame_clock = true;
-        break;
-
-    case 7456:
-        quarter_frame_clock = true;
-        half_frame_clock = true;
-        break;
-
-    case 11185:
-        quarter_frame_clock = true;
-        break;
-
-    case 14914:
-        if (four_step_sequence_mode)
-        {
-            if (!interrupt_inhibit) IRQ = true;
-            quarter_frame_clock = true;
-            half_frame_clock = true;
-            clock_counter = 1;
-        }
-        break;
-
-    case 18640:
-        if (!four_step_sequence_mode)
-        {
-            quarter_frame_clock = true;
-            half_frame_clock = true;
-            clock_counter = 1;
-        }
-        break;
-    }
-
-	// Clock envelope and triangle linear counter
-	if (quarter_frame_clock)
-	{
 		soundChannelEnvelopeClock(pulse1.env);
 		soundChannelEnvelopeClock(pulse2.env);
 		soundChannelEnvelopeClock(noise.env);
 		linearCounterClock(triangle.linear_counter);
-	}
+        break;
 
-	// Clock sweeper and length counter
-	if (half_frame_clock)
-	{
+    case 7456:
+		soundChannelEnvelopeClock(pulse1.env);
+		soundChannelEnvelopeClock(pulse2.env);
+		soundChannelEnvelopeClock(noise.env);
+		linearCounterClock(triangle.linear_counter);
+		
 		soundChannelSweeperClock(pulse1);
 		soundChannelLengthCounterClock(pulse1.len_counter);
 
@@ -293,7 +259,56 @@ IRAM_ATTR void Apu2A03::clock()
 
 		soundChannelLengthCounterClock(triangle.len_counter);
 		soundChannelLengthCounterClock(noise.len_counter);
-	}
+        break;
+
+    case 11185:
+		soundChannelEnvelopeClock(pulse1.env);
+		soundChannelEnvelopeClock(pulse2.env);
+		soundChannelEnvelopeClock(noise.env);
+		linearCounterClock(triangle.linear_counter);
+        break;
+
+    case 14914:
+        if (four_step_sequence_mode)
+        {
+            if (!interrupt_inhibit) IRQ = true;
+			soundChannelEnvelopeClock(pulse1.env);
+			soundChannelEnvelopeClock(pulse2.env);
+			soundChannelEnvelopeClock(noise.env);
+			linearCounterClock(triangle.linear_counter);
+			
+			soundChannelSweeperClock(pulse1);
+			soundChannelLengthCounterClock(pulse1.len_counter);
+
+			soundChannelSweeperClock(pulse2);
+			soundChannelLengthCounterClock(pulse2.len_counter);
+
+			soundChannelLengthCounterClock(triangle.len_counter);
+			soundChannelLengthCounterClock(noise.len_counter);
+            clock_counter = 1;
+        }
+        break;
+
+    case 18640:
+        if (!four_step_sequence_mode)
+        {
+			soundChannelEnvelopeClock(pulse1.env);
+			soundChannelEnvelopeClock(pulse2.env);
+			soundChannelEnvelopeClock(noise.env);
+			linearCounterClock(triangle.linear_counter);
+			
+			soundChannelSweeperClock(pulse1);
+			soundChannelLengthCounterClock(pulse1.len_counter);
+
+			soundChannelSweeperClock(pulse2);
+			soundChannelLengthCounterClock(pulse2.len_counter);
+
+			soundChannelLengthCounterClock(triangle.len_counter);
+			soundChannelLengthCounterClock(noise.len_counter);
+            clock_counter = 1;
+        }
+        break;
+    }
 
 	// Mute sound channels if muted
 	if (pulse1.sweep.mute || pulse1.seq.reload < 8 || pulse1.len_counter.timer == 0)
