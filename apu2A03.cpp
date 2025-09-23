@@ -1,5 +1,7 @@
 #include "apu2A03.h"
 
+DMA_ATTR uint16_t Apu2A03::audio_buffer[AUDIO_BUFFER_SIZE * 2];
+
 Apu2A03::Apu2A03()
 {
     memset(audio_buffer, 0, sizeof(audio_buffer));
@@ -330,14 +332,21 @@ IRAM_ATTR void Apu2A03::clock()
 	// }
 
 	// Put sound channels output into audio buffers
-	// Generate sample evey 20.29221088 clocks
+	// Generate sample every 20.29221088 clocks
 	// (1.789773 MHz / 2) / 44100 Hz
 	if (pulse_hz > 894886)
 	{
 		generateSample();
 		pulse_hz -= 894886;
 	}
-	pulse_hz += 44100;
+
+    // if (pulse_hz > 1073863)
+	// {
+	// 	generateSample();
+	// 	pulse_hz -= 1073863;
+	// }
+    
+	pulse_hz += SAMPLE_RATE;
 	clock_counter++;
 }
 
@@ -353,7 +362,7 @@ IRAM_ATTR void Apu2A03::generateSample()
 	if (!(noise.shift_register & 0x01) && noise.len_counter.timer > 0)
 		audio_buffer[index] += noise.env.output;
 
-	if (audio_buffer[index] > 127) audio_buffer[index] = 127;
+	if (audio_buffer[index] > 255) audio_buffer[index] = 255;
     audio_buffer[index] <<= 8;
 
 	// Reset audio buffer index once filled
@@ -363,7 +372,7 @@ IRAM_ATTR void Apu2A03::generateSample()
         buffer_index = 0; 
 
         static size_t dummy;
-        i2s_write(I2S_NUM_0, audio_buffer, sizeof(audio_buffer), &dummy, 0);
+        i2s_write(I2S_NUM_0, audio_buffer, sizeof(audio_buffer), &dummy, portMAX_DELAY);
     }
 }
 

@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <cstdint>
 
+#include "config.h"
 #include "driver/i2s.h"
 
 #define AUDIO_BUFFER_SIZE 256
@@ -21,7 +22,7 @@ public:
 	void setDMCBuffer(uint8_t value);
     uint16_t getDMCAddress();
     void resetChannels();
-    int16_t audio_buffer[AUDIO_BUFFER_SIZE * 2];
+    static uint16_t audio_buffer[AUDIO_BUFFER_SIZE * 2];
 
     uint8_t DMC_sample_byte = 0;
 	bool DMC_DMA_load = false;
@@ -29,7 +30,6 @@ public:
 	bool DMC_DMA_alignment = false;
 	bool DMC_DMA_dummy = false;
 	bool DMC_DMA_done = false;
-	bool buffer_filled = false;
 	bool IRQ = false;
 	uint16_t buffer_index = 0;
 
