@@ -387,7 +387,6 @@ IRAM_ATTR void Cpu6502::clock(int i)
             else if (apu.DMC_DMA_reload) DMC_DMA_Reload();
 
         }
-        //apu.clock();
     }
 }
 

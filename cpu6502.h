@@ -18,6 +18,8 @@ public:
     ~Cpu6502();
 
 public:
+    Apu2A03 apu;
+
     // Status Register Flags
     enum FLAGS
     {
@@ -58,7 +60,6 @@ public:
     uint16_t temp = 0x0000;
 
 private: 
-    Apu2A03 apu;
     // struct OPCODE
 	// {
 	// 	uint8_t(Cpu6502::* instruction)(void) = nullptr;

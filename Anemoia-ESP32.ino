@@ -7,8 +7,8 @@
 #include <WiFi.h>
 #include <vector>
 
-#include "config.h"
 #include "bus.h"
+#include "config.h"
 #include "driver/i2s.h"
 #include "esp_wifi.h"
 #include "esp_bt.h"
@@ -55,15 +55,6 @@ void setup()
 
     selectGame();
 
-    // xTaskCreatePinnedToCore(
-    // apuTask,
-    // "APU Task",
-    // 4096,                // Stack size
-    // &apu,                // Param (your Cpu6502 instance)
-    // 1,                   // Priority (higher = runs more often)
-    // NULL,                // Task handle (optional)
-    // 0                    // Core 0
-    // );
 }
 
 void loop() 
@@ -91,10 +82,10 @@ void setupI2SDAC()
         .sample_rate = SAMPLE_RATE,
         .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
         .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT,
-        .communication_format = I2S_COMM_FORMAT_I2S_LSB,
+        .communication_format = I2S_COMM_FORMAT_I2S_MSB,
         .intr_alloc_flags = 0,
         .dma_buf_count = 2,
-        .dma_buf_len = 512,
+        .dma_buf_len = 256,
         .use_apll = false,
         .tx_desc_auto_clear = true,
         .fixed_mclk = 0
@@ -104,24 +95,15 @@ void setupI2SDAC()
     i2s_set_dac_mode(I2S_DAC_CHANNEL_RIGHT_EN);
 }
 
-// void apuTask(void* param) {
-//     Apu2A03* apu = (Apu2A03*)param;
+void apuTask(void* param) 
+{
+    Apu2A03* apu = (Apu2A03*)param;
 
-//     constexpr double cpuClockHz = 1789773.0; // NTSC
-//     constexpr double apuTickInterval = 1e9 / cpuClockHz;
-
-//     uint32_t last = micros();
-//     while (true) 
-//     {
-//         uint32_t now = micros();
-//         while (now - last >= apuTickInterval) 
-//         {
-//             apu->clock(); // advance one APU tick
-//             last += apuTickInterval;
-//         }
-//         now = micros();
-//     }
-// }
+    while (true)
+    {
+        apu->clock();
+    }
+}
 
 int selected = 0;
 int prev_selected = 0;
@@ -237,6 +219,16 @@ void emulate()
     nes.insertCartridge(cart);
     nes.connectScreen(&screen);
     nes.reset();
+
+    xTaskCreatePinnedToCore(
+    apuTask,
+    "APU Task",
+    1024,
+    &nes.cpu.apu,
+    1,
+    NULL,
+    0
+    );
 
     #ifdef DEBUG
         last_frame_time = micros();
