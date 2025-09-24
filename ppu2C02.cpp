@@ -2,8 +2,6 @@
 #include "bus.h"
 
 #define READ_PALETTE(x) palette_table[((x) & 0x1F) ^ (((x) & 0x13) == 0x10 ? 0x10 : 0x00)]
-uint16_t Ppu2C02::scanline_buffer[BUFFER_SIZE];
-uint8_t Ppu2C02::scanline_metadata[BUFFER_SIZE];
 DMA_ATTR uint16_t Ppu2C02::display_buffer[SCANLINE_SIZE * SCANLINES_PER_BUFFER];
 
 static constexpr uint16_t bitplane_lo[256] = 

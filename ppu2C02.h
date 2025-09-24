@@ -47,8 +47,8 @@ private:
 
     void finishScanline(uint16_t scanline);
 
-    static uint16_t scanline_buffer[BUFFER_SIZE];
-    static uint8_t scanline_metadata[BUFFER_SIZE];
+    uint16_t scanline_buffer[BUFFER_SIZE];
+    uint8_t scanline_metadata[BUFFER_SIZE];
     static uint16_t display_buffer[SCANLINE_SIZE * SCANLINES_PER_BUFFER];
     uint8_t nametable[2048];
     uint8_t* ptr_nametable[4];
