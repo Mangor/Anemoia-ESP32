@@ -6,6 +6,7 @@ Bus::Bus()
     memset(controller, 0, sizeof(controller));
     memset(controller_state, 0, sizeof(controller_state));
     cpu.connectBus(this);
+    cpu.apu.connectBus(this);
     ppu.connectBus(this);
 }
 
@@ -123,11 +124,11 @@ IRAM_ATTR void Bus::clock()
     // Scanline 240
     cpu.clock(113);
 
-    // Scanline 241
+    // Scanline 241-261
     ppu.setVBlank();
     cpu.clock(114);
 
-    // Scanline 242
+    // Scanline 242-261
     cpu.clock(114);
 
     // Scanline 243-258

@@ -9,6 +9,8 @@
 
 #define AUDIO_BUFFER_SIZE 256
 
+class Bus;
+class Cpu6502;
 class Apu2A03
 {
 public:
@@ -16,25 +18,22 @@ public:
     ~Apu2A03();
 
 public:
+    void connectBus(Bus* n) { bus = n; }
+    void connectCPU(Cpu6502* n) { cpu = n; }
     void cpuWrite(uint16_t addr, uint8_t data);
     uint8_t cpuRead(uint16_t addr);
     void clock();
-	void setDMCBuffer(uint8_t value);
-    uint16_t getDMCAddress();
     void resetChannels();
     static uint16_t audio_buffer[AUDIO_BUFFER_SIZE * 2];
 
     uint8_t DMC_sample_byte = 0;
-	bool DMC_DMA_load = false;
-	bool DMC_DMA_reload = false;
-	bool DMC_DMA_alignment = false;
-	bool DMC_DMA_dummy = false;
-	bool DMC_DMA_done = false;
 	bool IRQ = false;
 	uint16_t buffer_index = 0;
 
 
 private:
+	Bus* bus = nullptr;
+	Cpu6502* cpu = nullptr;
 	double output = 0.0;
     uint32_t clock_counter = 0;
 	uint32_t pulse_hz = 0;
@@ -200,6 +199,8 @@ private:
 	void soundChannelSweeperClock(pulseChannel& channel);
 	void soundChannelLengthCounterClock(length_counter& len_counter);
 	void linearCounterClock(linear_counter& linear_counter);
+
+	void setDMCBuffer();
 };
 
 #endif

@@ -1,4 +1,6 @@
 #include "apu2A03.h"
+#include "bus.h"
+#include "cpu6502.h"
 
 DMA_ATTR uint16_t Apu2A03::audio_buffer[AUDIO_BUFFER_SIZE * 2];
 
@@ -193,9 +195,8 @@ IRAM_ATTR void Apu2A03::cpuWrite(uint16_t addr, uint8_t data)
 			DMC_enable = true;
 			if (DMC.sample_buffer_empty)
 			{
-				DMC_DMA_load = true;
-				DMC_DMA_alignment = true;
-				DMC_DMA_dummy = true;
+				setDMCBuffer();
+				cpu->cycles += 3;
 			}
 		}
 		else
@@ -465,9 +466,8 @@ IRAM_ATTR void Apu2A03::DMCChannelClock(DMCChannel& DMC, bool enable)
 				DMC.output_unit.silence_flag = false;
 				DMC.output_unit.shift_register = DMC.sample_buffer;
 				DMC.sample_buffer_empty = true;
-				DMC_DMA_reload = true;
-				DMC_DMA_alignment = true;
-				DMC_DMA_dummy = true;
+				setDMCBuffer();
+				cpu->cycles += 4;
 			}
 		}
 	}
@@ -547,8 +547,9 @@ IRAM_ATTR void Apu2A03::linearCounterClock(linear_counter& linear_counter)
 		linear_counter.reload_flag = false;
 }
 
-IRAM_ATTR void Apu2A03::setDMCBuffer(uint8_t value)
+inline void Apu2A03::setDMCBuffer()
 {
+	uint8_t value = bus->cpuRead(DMC.memory_reader.address);
 	if (DMC.memory_reader.remaining_bytes <= 0) return;
 
     DMC.sample_buffer = value;
@@ -569,9 +570,4 @@ IRAM_ATTR void Apu2A03::setDMCBuffer(uint8_t value)
         }
         else if (DMC.IRQ_flag) IRQ = true;
     }
-}
-
-IRAM_ATTR uint16_t Apu2A03::getDMCAddress()
-{
-	return DMC.memory_reader.address;
 }
