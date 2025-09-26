@@ -114,7 +114,6 @@ private:
     static const uint8_t zn_table[256];
     //static const OPCODE lookup[256];
 
-    void OAM_DMA_Tick();
     void DMC_DMA_Load();
     void DMC_DMA_Reload();
 
