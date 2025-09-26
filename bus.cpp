@@ -126,25 +126,7 @@ IRAM_ATTR void Bus::clock()
 
     // Scanline 241-261
     ppu.setVBlank();
-    cpu.clock(114);
-
-    // Scanline 242-261
-    cpu.clock(114);
-
-    // Scanline 243-258
-    for (ppu_scanline = 243; ppu_scanline < 259; ppu_scanline += 3)
-    {
-        cpu.clock(113);
-
-        cpu.clock(114);
-
-        cpu.clock(114);
-    }
-
-    // Scanline 259-261
-    cpu.clock(113);
-
-    cpu.clock(114);
+    cpu.clock(2501);
 
     ppu.clearVBlank();
     cpu.clock(114);
