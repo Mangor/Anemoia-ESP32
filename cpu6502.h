@@ -7,7 +7,7 @@
 #include "apu2A03.h"
 
 #define GET_FLAG(f) ((status & (f)) != 0)
-#define SET_FLAG(f, v) (status = ((status & ~(f)) | ((-(int)(v)) & (f))))
+#define SET_FLAG(f, v) (status = (v) ? (status | (f)) : (status & ~(f)))
 #define SET_ZN(v) (status = ((status & ~(Z | N)) | zn_table[(v)]))
 
 class Bus;

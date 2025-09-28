@@ -519,7 +519,6 @@ inline uint8_t Cpu6502::REL()
 inline uint8_t Cpu6502::ZPG()
 {
 	addr_abs = read(PC++);
-	addr_abs &= 0x00FF;
 	return 0;
 }
 
