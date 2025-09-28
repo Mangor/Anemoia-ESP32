@@ -20,7 +20,7 @@ public:
     Ppu2C02 ppu;
     Cartridge* cart;
     uint8_t RAM[2048];
-    uint8_t controller[2];
+    uint8_t controller;
 
     void cpuWrite(uint16_t addr, uint8_t data);
     uint8_t cpuRead(uint16_t addr);
@@ -43,7 +43,7 @@ private:
     TFT_eSPI* ptr_screen;
     uint16_t system_clock_counter = 0;
     uint16_t cpu_clock = 0;
-    uint8_t controller_state[2];
+    uint8_t controller_state;
     uint8_t controller_strobe = 0x00;
     bool frame_latch = false;
 };

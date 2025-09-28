@@ -242,15 +242,15 @@ void emulate()
         #endif
 
         // Read button input
-        nes.controller[0] = 0;
-        if (digitalRead(A_BUTTON)      == LOW) nes.controller[0] |= (1 << 0); // A
-        if (digitalRead(B_BUTTON)      == LOW) nes.controller[0] |= (1 << 1); // B
-        if (digitalRead(SELECT_BUTTON) == LOW) nes.controller[0] |= (1 << 2); // Select
-        if (digitalRead(START_BUTTON)  == LOW) nes.controller[0] |= (1 << 3); // Start
-        if (digitalRead(UP_BUTTON)     == LOW) nes.controller[0] |= (1 << 4); // Up
-        if (digitalRead(DOWN_BUTTON)   == LOW) nes.controller[0] |= (1 << 5); // Down
-        if (digitalRead(LEFT_BUTTON)   == LOW) nes.controller[0] |= (1 << 6); // Left
-        if (digitalRead(RIGHT_BUTTON)  == LOW) nes.controller[0] |= (1 << 7); // Right
+        nes.controller = 0;
+        if (digitalRead(A_BUTTON)      == LOW) nes.controller |= (1 << 0); // A
+        if (digitalRead(B_BUTTON)      == LOW) nes.controller |= (1 << 1); // B
+        if (digitalRead(SELECT_BUTTON) == LOW) nes.controller |= (1 << 2); // Select
+        if (digitalRead(START_BUTTON)  == LOW) nes.controller |= (1 << 3); // Start
+        if (digitalRead(UP_BUTTON)     == LOW) nes.controller |= (1 << 4); // Up
+        if (digitalRead(DOWN_BUTTON)   == LOW) nes.controller |= (1 << 5); // Down
+        if (digitalRead(LEFT_BUTTON)   == LOW) nes.controller |= (1 << 6); // Left
+        if (digitalRead(RIGHT_BUTTON)  == LOW) nes.controller |= (1 << 7); // Right
 
         // Generate one frame
         nes.clock();

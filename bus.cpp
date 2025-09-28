@@ -3,8 +3,6 @@
 Bus::Bus()
 {
     memset(RAM, 0, sizeof(RAM));
-    memset(controller, 0, sizeof(controller));
-    memset(controller_state, 0, sizeof(controller_state));
     cpu.connectBus(this);
     cpu.apu.connectBus(this);
     ppu.connectBus(this);
@@ -38,8 +36,7 @@ IRAM_ATTR void Bus::cpuWrite(uint16_t addr, uint8_t data)
         controller_strobe = data & 1;
         if (controller_strobe)
         {
-            controller_state[0] = controller[0];
-            controller_state[1] = controller[1];
+            controller_state = controller;
         }
     }
 }
@@ -57,11 +54,11 @@ IRAM_ATTR uint8_t Bus::cpuRead(uint16_t addr)
     {
         data = ppu.cpuRead(addr);
     }
-    else if (addr == 0x4016 || addr == 0x4017)
+    else if (addr == 0x4016)
     {
-        uint8_t value = controller_state[addr & 1] & 1;
+        uint8_t value = controller_state & 1;
         if (!controller_strobe)
-            controller_state[addr & 1] >>= 1;
+            controller_state >>= 1;
         data = value | 0x40;
     }
     return data;
