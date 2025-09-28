@@ -238,6 +238,7 @@ IRAM_ATTR void Ppu2C02::renderScanline()
     attribute = ((attribute_byte >> attribute_shift) & 3) << 2;
 
     static constexpr uint8_t pixel_shift[8] = { 14, 6, 12, 4, 10, 2, 8, 0 }; // Shifts to get the bits of a pixel
+    static constexpr uint8_t pixel_metadata[4] = { 0x80, 0x00, 0x00, 0x00 };
     for (int tile = 0; tile < 33; tile++)
     {
         tile_index = *ptr_tile++;
@@ -252,7 +253,7 @@ IRAM_ATTR void Ppu2C02::renderScanline()
         {   
             uint8_t pixel = (pattern >> pixel_shift[i]) & 3;
             *ptr_buffer++ = tile_palette[pixel];
-            *ptr_scanline_meta++ = (pixel == 0) ? 0x80 : 0x00; // Store if pixel is transparent for sprite rendering
+            *ptr_scanline_meta++ = pixel_metadata[pixel]; // Store if pixel is transparent for sprite rendering
         }
 
         x_tile++;
