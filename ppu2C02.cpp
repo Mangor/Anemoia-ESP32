@@ -65,14 +65,7 @@ inline IRAM_ATTR void Ppu2C02::ppuWrite(uint16_t addr, uint8_t data)
     }
     else if (addr >= 0x3F00 && addr <= 0x3FFF)
     {
-        addr &= 0x001F;
-        switch (addr)
-        {
-        case 0x0010: addr = 0x0000; break;
-        case 0x0014: addr = 0x0004; break;
-        case 0x0018: addr = 0x0008; break;
-        case 0x001C: addr = 0x000C; break;
-        }
+        addr = palette_mirror[addr & 0x001F];
         palette_table[addr] = data;
     }
 }

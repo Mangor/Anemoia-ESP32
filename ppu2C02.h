@@ -46,7 +46,6 @@ private:
     Bus* bus = nullptr;
 
     void finishScanline(uint16_t scanline);
-
     uint16_t scanline_buffer[BUFFER_SIZE];
     uint8_t scanline_metadata[BUFFER_SIZE];
     static uint16_t display_buffer[SCANLINE_SIZE * SCANLINES_PER_BUFFER];
@@ -66,6 +65,13 @@ private:
         0xA524, 0x85C5, 0x6628, 0x560F, 0x5598, 0x39E7, 0x0000, 0x0000,
         0xFFFF, 0xBEBF, 0xCE7F, 0xDE3F, 0xEE1F, 0xF61B, 0xF638, 0xEE95,
         0xDED3, 0xCF13, 0xBF35, 0xB738, 0xB6FC, 0xAD55, 0x0000, 0x0000,
+    };
+    static constexpr uint8_t palette_mirror[32] =
+    {
+        0x00,0x01,0x02,0x03, 0x04,0x05,0x06,0x07,
+        0x08,0x09,0x0A,0x0B, 0x0C,0x0D,0x0E,0x0F,
+        0x00,0x11,0x12,0x13, 0x04,0x15,0x16,0x17,
+        0x08,0x19,0x1A,0x1B, 0x0C,0x1D,0x1E,0x1F
     };
 
     // PPU Registers
@@ -168,6 +174,7 @@ private:
     uint8_t* ptr_attribute = nullptr;
     uint8_t* ptr_pattern_tile = nullptr;
     uint8_t* ptr_scanline_meta = nullptr;
+    
     static constexpr uint8_t pixel_shift[16] = 
     { 14, 6, 12, 4, 10, 2, 8, 0,
       0, 8, 2, 10, 4, 12, 6, 14 }; // Shifts to get the bits of a pixel
