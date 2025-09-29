@@ -629,8 +629,8 @@ inline uint8_t Cpu6502::Instr_PHA()
 inline uint8_t Cpu6502::Instr_PHP()
 {
     write(0x0100 + SP, status | B | U);
-    SET_FLAG(B, 0);
-    SET_FLAG(U, 1);
+    status &= ~B;
+    status |= U;
     SP--;
     return 0;
 }
@@ -647,8 +647,8 @@ inline uint8_t Cpu6502::Instr_PLP()
 {
     SP++;
     status = read(0x0100 + SP);
-    SET_FLAG(B, 0);
-    SET_FLAG(U, 1);
+    status &= ~B;
+    status |= U;
     return 0;
 }
 
@@ -794,43 +794,43 @@ inline uint8_t Cpu6502::Instr_ROR()
 
 inline uint8_t Cpu6502::Instr_CLC()
 {
-    SET_FLAG(C, false);
+    status &= ~C;
     return 0;
 }
 
 inline uint8_t Cpu6502::Instr_CLD()
 {
-    SET_FLAG(D, false);
+    status &= ~D;
     return 0;
 }
 
 inline uint8_t Cpu6502::Instr_CLI()
 {
-    SET_FLAG(I, false);
+    status &= ~I;
     return 0;
 }
 
 inline uint8_t Cpu6502::Instr_CLV()
 {
-    SET_FLAG(V, false);
+    status &= ~V;
     return 0;
 }
 
 inline uint8_t Cpu6502::Instr_SEC()
 {
-    SET_FLAG(C, true);
+    status |= C;
     return 0;
 }
 
 inline uint8_t Cpu6502::Instr_SED()
 {
-    SET_FLAG(D, true);
+    status |= D;
     return 0;
 }
 
 inline uint8_t Cpu6502::Instr_SEI()
 {
-    SET_FLAG(I, true);
+    status |= I;
     return 0;
 }
 
@@ -1014,8 +1014,8 @@ inline uint8_t Cpu6502::Instr_BRK()
     write(0x0100 | (uint8_t)(SP - 1), PC & 0x00FF);
     status |= (U | B);
     write(0x0100 | (uint8_t)(SP - 2), status);
-    SET_FLAG(B, 0);
-    SET_FLAG(I, 1);
+    status &= ~B;
+    status |= I;
 
     uint8_t low_byte = read(0xFFFE);
     uint8_t high_byte = read(0xFFFF);
@@ -1028,8 +1028,8 @@ inline uint8_t Cpu6502::Instr_BRK()
 inline uint8_t Cpu6502::Instr_RTI()
 {
     status = read(0x0100 | (uint8_t)(SP + 1));
-    SET_FLAG(B, 0);
-    SET_FLAG(U, 1);
+    status &= ~B;
+    status |= U;
 
     PC = (uint16_t)read(0x0100 | (uint8_t)(SP + 2));
     PC |= (uint16_t)read(0x0100 | (uint8_t)(SP + 3)) << 8;
@@ -1066,7 +1066,7 @@ void Cpu6502::IRQ()
 
         write(0x0100 | (uint8_t)(SP - 2), status);
 
-        SET_FLAG(I, 1);
+        status |= I;
 
         uint8_t low_byte = read(0xFFFE);
         uint8_t high_byte = read(0xFFFF);
@@ -1085,7 +1085,7 @@ void Cpu6502::NMI()
 
     write(0x0100 | (uint8_t)(SP - 2), status);
 
-    SET_FLAG(I, 1);
+    status |= I;
 
     uint8_t low_byte = read(0xFFFA);
     uint8_t high_byte = read(0xFFFB);
