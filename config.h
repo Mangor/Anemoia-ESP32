@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 #define FRAMESKIP
-#define DEBUG
+// #define DEBUG // Uncomment this line if you want debug prints from serial
 
 // MicroSD card module Pins
 #define SD_MOSI_PIN 13

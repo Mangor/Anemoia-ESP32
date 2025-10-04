@@ -21,7 +21,10 @@ Cartridge* cart;
 void setup() 
 {
     // Turn off Wifi and Bluetooth to reduce CPU overhead
-    Serial.begin(115200);
+    #ifdef DEBUG
+        Serial.begin(115200);
+    #endif
+    
     WiFi.mode(WIFI_OFF);
     esp_wifi_stop();
     esp_wifi_deinit();
