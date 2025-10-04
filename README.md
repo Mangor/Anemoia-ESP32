@@ -45,7 +45,7 @@ Feel free to open an issue if a game has glitches or fails to boot.
 |                   | CS       | 4         |
 |                   | DC       | 2         |
 |                   | RST      | 5         |
-| **PAM8403**       | L        | 25
+| **PAM8403**       | L        | 25        |
 | **Buttons**       | A        | 22        |
 |                   | B        | 21        |
 |                   | Left     | 0         |
@@ -76,14 +76,14 @@ Either use `git clone https://github.com/Shim06/Anemoia-ESP32.git` on the comman
 ```cmd
 https://espressif.github.io/arduino-esp32/package_esp32_index.json
 ```
-3. Download the ESP32 board support through <b> Tools → Board → Boards Manager </b>. 
+3. Download the ESP32 board support `v3.2.1` through <b> Tools → Board → Boards Manager </b>. 
 4. Download the `SdFat` and `TFT_eSPI` libraries from <b> Tools → Manage Libraries </b>.
 
 ### Step 3 - Configure TFT_eSPI
 The emulator uses a custom display configuration for the ST7789 display.
 1. Navigate to your Arduino Libraries folder:
 (Default location): `Documents/Arduino/libraries/TFT_eSPI`
-2. Open User_Setup_Select.h in a text editor.
+2. Open `User_Setup_Select.h` in a text editor.
 3. Comment out any existing `#include` lines and add the following instead:
 ```C++
 #include <User_Setups/Anemoia-ST7789.h>
@@ -96,7 +96,7 @@ The emulator uses a custom display configuration for the ST7789 display.
 ```cmd
 \Users\{username}\AppData\Local\Arduino15\packages\esp32\hardware\esp32\{version}\
 ```
-2. Copy the platform.local.txt file from this repository to that folder.
+2. Copy the platform.txt file from this repository and paste into that folder.
 This file defines additional compiler flags and optimizations used by Anemoia-ESP32.
 
 ### Step 5 - Upload
