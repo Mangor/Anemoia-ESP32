@@ -8,7 +8,7 @@
 
 <p align="center">
   Anemoia-ESP32 is a rewrite and port of the Anemoia Nintendo Entertainment System (NES) emulator running directly on the ESP32.  
-  It is written in C++ using and designed to bring classic NES games to embedded hardware.  
+  It is written in C++ and is designed to bring classic NES games to the ESP32.  
   This project focuses on performance, being able to run the emulator at almost native speeds and with full audio emulation implemented. However, games with complex mappers may induce a small speed loss.
   <br/>
   Anemoia-ESP32 is available on GitHub under the <a href="https://github.com/Shim06/Anemoia-ESP32/blob/main/LICENSE" target="_blank">GNU General Public License v3.0 (GPLv3)</a>.
@@ -25,9 +25,11 @@ Feel free to open an issue if a game has glitches or fails to boot.
 
 ## Hardware
 
-- **ESP32** 38-pin development board.  
-- **MicroSD card module** for loading ROMs.  
-- **320x240 TFT ST7789 LCD**. 
+- **ESP32** 38-pin development board
+- **MicroSD card module**
+- **320x240 TFT ST7789 LCD**
+- **PAM8403 with a potentiometer**
+- **8 Ohms 0.5W speaker**
 - **8 Tactile push buttons**
 
 ### Default Pin Setup
@@ -43,6 +45,7 @@ Feel free to open an issue if a game has glitches or fails to boot.
 |                   | CS       | 4         |
 |                   | DC       | 2         |
 |                   | RST      | 5         |
+| **PAM8403**       | L        | 25
 | **Buttons**       | A        | 22        |
 |                   | B        | 21        |
 |                   | Left     | 0         |
