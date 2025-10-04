@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "Arduino.h"
+#include "config.h"
 
 class Cartridge;
 struct MapperVTable;

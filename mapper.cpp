@@ -15,12 +15,14 @@ IRAM_ATTR void bankInit(BankCache* cache, Bank* banks, uint8_t num_banks, uint32
         cache->banks[i].size = bank_size;
 
         uint8_t* ptr = (uint8_t*)malloc(bank_size);
-        if (!ptr) Serial.printf("%i KB for bank %d Allocation failed.\n", bank_size / 1024, i);
-        else
-        {
-            Serial.printf("Allocated %i KB for bank %d, free heap: %u bytes\n",
-            bank_size / 1024, i, heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-        }
+        #ifdef DEBUG
+            if (!ptr) Serial.printf("%i KB for bank %d Allocation failed.\n", bank_size / 1024, i);
+            else
+            {
+                Serial.printf("Allocated %i KB for bank %d, free heap: %u bytes\n",
+                bank_size / 1024, i, heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
+            }
+        #endif
         cache->banks[i].bank_ptr = ptr;
     }
 }
