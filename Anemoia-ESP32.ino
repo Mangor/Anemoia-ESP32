@@ -85,7 +85,7 @@ void setupI2SDAC()
         .communication_format = I2S_COMM_FORMAT_I2S_MSB,
         .intr_alloc_flags = 0,
         .dma_buf_count = 2,
-        .dma_buf_len = 256,
+        .dma_buf_len = 128,
         .use_apll = false,
         .tx_desc_auto_clear = true,
         .fixed_mclk = 0
@@ -160,7 +160,7 @@ void selectGame()
 {
     getNesFiles();
     drawFileList();
-    static unsigned int last_input_time = 0;
+    unsigned int last_input_time = 0;
     constexpr unsigned int delay = 250; 
     const int size = files.size();
 

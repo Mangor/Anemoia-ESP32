@@ -7,7 +7,7 @@
 #include "config.h"
 #include "driver/i2s.h"
 
-#define AUDIO_BUFFER_SIZE 256
+#define AUDIO_BUFFER_SIZE 128
 
 class Bus;
 class Cpu6502;
