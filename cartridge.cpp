@@ -62,6 +62,7 @@ Cartridge::Cartridge(const char* filename)
         case 0: mapper = createMapper000(number_PRG_banks, number_CHR_banks, this); break;
         case 1: mapper = createMapper001(number_PRG_banks, number_CHR_banks, this); break;
         case 2: mapper = createMapper002(number_PRG_banks, number_CHR_banks, this); break;
+        case 3: mapper = createMapper003(number_PRG_banks, number_CHR_banks, this); break;
         case 4: mapper = createMapper004(number_PRG_banks, number_CHR_banks, this); break;
     }
 }
