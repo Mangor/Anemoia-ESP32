@@ -1,4 +1,5 @@
-#define ST7789_DRIVER
+#define ST7789_DRIVER // Uncomment if using ST7789 display
+// #define ILI9341_DRIVER // Uncomment if using ILI9341 display
 
 #define TFT_WIDTH  240
 #define TFT_HEIGHT 320
