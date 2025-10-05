@@ -77,6 +77,8 @@ Either use `git clone https://github.com/Shim06/Anemoia-ESP32.git` on the comman
 https://espressif.github.io/arduino-esp32/package_esp32_index.json
 ```
 3. Download the ESP32 board support `v3.2.1` through <b> Tools → Board → Boards Manager </b>. 
+> [!IMPORTANT]
+> Make sure to download version 3.2.1, as different board versions may have worse performance.
 4. Download the `SdFat` and `TFT_eSPI` libraries from <b> Tools → Manage Libraries </b>.
 
 ### Step 3 - Configure TFT_eSPI
@@ -84,20 +86,29 @@ The emulator uses a custom display configuration for the ST7789 display.
 1. Navigate to your Arduino Libraries folder:
 (Default location): `Documents/Arduino/libraries/TFT_eSPI`
 2. Open `User_Setup_Select.h` in a text editor.
-3. Comment out any existing `#include` lines and add the following instead:
+3. Comment out `#include <User_Setup.h>` and any other setup includes and add `<User_Setups/Anemoia-ST7789.h>`:
 ```C++
+// #include <User_Setup.h>
 #include <User_Setups/Anemoia-ST7789.h>
 ```
 4. Copy the provided `Anemoia-ST7789.h` file from this repository into
 `TFT_eSPI/User_Setups/`. Optionally, edit the `#define` pins as desired.
+> [!NOTE]
+> If using a screen with the ILI9341 driver, open `Anemoia-ST7789.h` in a text editor and comment out `#define ST7789_DRIVER` and uncomment `#define ILI9341_DRIVER`.
+> ```C++
+> // #define ST7789_DRIVER
+> #define ILI9341_DRIVER
+> ```
 
 ### Step 4 - Apply custom build flags
 1. Locate your ESP32 Arduino platform directory. This is typically at:
 ```cmd
 \Users\{username}\AppData\Local\Arduino15\packages\esp32\hardware\esp32\{version}\
 ```
-2. Copy the platform.txt file from this repository and paste into that folder.
+2. Copy the `platform.txt` file from this repository and paste into that folder.
 This file defines additional compiler flags and optimizations used by Anemoia-ESP32.
+> [!WARNING]
+> Backup your `platform.txt` file if you have your own custom settings already. 
 
 ### Step 5 - Upload
 1. Connect your ESP32 via USB.
