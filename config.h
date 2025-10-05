@@ -1,8 +1,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define FRAMESKIP
-// #define DEBUG // Uncomment this line if you want debug prints from serial
+// Screen Configuration
+#define SCREEN_ROTATION 1 // Screen orientation: 1 or 3 (1 = landscape, 3 = landscape flipped)
+#define SCREEN_SWAP_BYTES true // Set to false if colors appear wrong
 
 // MicroSD card module Pins
 #define SD_MOSI_PIN 13
@@ -22,5 +23,8 @@
 
 // Sound sample rate
 #define SAMPLE_RATE 44100
+
+#define FRAMESKIP
+// #define DEBUG // Uncomment this line if you want debug prints from serial
 
 #endif

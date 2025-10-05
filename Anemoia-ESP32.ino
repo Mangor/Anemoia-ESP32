@@ -37,11 +37,11 @@ void setup()
 
     // Initialize TFT screen
     screen.begin();
-    screen.setRotation(1);
+    screen.setRotation(SCREEN_ROTATION);
     screen.initDMA();
     screen.fillScreen(TFT_BLACK);
     screen.startWrite();
-    screen.setSwapBytes(true);
+    screen.setSwapBytes(SCREEN_SWAP_BYTES);
 
     // Initialize microsd card
     if(!initSD()) while (true);
