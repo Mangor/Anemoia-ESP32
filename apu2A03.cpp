@@ -88,9 +88,9 @@ IRAM_ATTR void Apu2A03::cpuWrite(uint16_t addr, uint8_t data)
 		break;
 
 	case 0x4008:
-		triangle.linear_counter.reload = data & 0x7F;
+		triangle.lin_counter.reload = data & 0x7F;
 		triangle.len_counter.halt = data >> 7;
-		triangle.linear_counter.control = data >> 7;
+		triangle.lin_counter.control = data >> 7;
 		break;
 
 	case 0x400A:
@@ -102,7 +102,7 @@ IRAM_ATTR void Apu2A03::cpuWrite(uint16_t addr, uint8_t data)
 		triangle.seq.timer = triangle.seq.reload;
 
 		if (triangle_enable) triangle.len_counter.timer = length_counter_lookup[data >> 3] + 1;
-		triangle.linear_counter.reload_flag = true;
+		triangle.lin_counter.reload_flag = true;
 		break;
 
 	case 0x400C:
@@ -245,14 +245,14 @@ IRAM_ATTR void Apu2A03::clock()
 		soundChannelEnvelopeClock(pulse1.env);
 		soundChannelEnvelopeClock(pulse2.env);
 		soundChannelEnvelopeClock(noise.env);
-		linearCounterClock(triangle.linear_counter);
+		linearCounterClock(triangle.lin_counter);
         break;
 
     case 7456:
 		soundChannelEnvelopeClock(pulse1.env);
 		soundChannelEnvelopeClock(pulse2.env);
 		soundChannelEnvelopeClock(noise.env);
-		linearCounterClock(triangle.linear_counter);
+		linearCounterClock(triangle.lin_counter);
 		
 		soundChannelSweeperClock(pulse1);
 		soundChannelLengthCounterClock(pulse1.len_counter);
@@ -268,7 +268,7 @@ IRAM_ATTR void Apu2A03::clock()
 		soundChannelEnvelopeClock(pulse1.env);
 		soundChannelEnvelopeClock(pulse2.env);
 		soundChannelEnvelopeClock(noise.env);
-		linearCounterClock(triangle.linear_counter);
+		linearCounterClock(triangle.lin_counter);
         break;
 
     case 14914:
@@ -278,7 +278,7 @@ IRAM_ATTR void Apu2A03::clock()
 			soundChannelEnvelopeClock(pulse1.env);
 			soundChannelEnvelopeClock(pulse2.env);
 			soundChannelEnvelopeClock(noise.env);
-			linearCounterClock(triangle.linear_counter);
+			linearCounterClock(triangle.lin_counter);
 			
 			soundChannelSweeperClock(pulse1);
 			soundChannelLengthCounterClock(pulse1.len_counter);
@@ -298,7 +298,7 @@ IRAM_ATTR void Apu2A03::clock()
 			soundChannelEnvelopeClock(pulse1.env);
 			soundChannelEnvelopeClock(pulse2.env);
 			soundChannelEnvelopeClock(noise.env);
-			linearCounterClock(triangle.linear_counter);
+			linearCounterClock(triangle.lin_counter);
 			
 			soundChannelSweeperClock(pulse1);
 			soundChannelLengthCounterClock(pulse1.len_counter);
@@ -377,7 +377,7 @@ IRAM_ATTR void Apu2A03::generateSample()
     }
 }
 
-IRAM_ATTR void Apu2A03::pulseChannelClock(sequencer& seq, bool enable)
+IRAM_ATTR void Apu2A03::pulseChannelClock(sequencerUnit& seq, bool enable)
 {
 	if (!enable) return;
 
@@ -400,7 +400,7 @@ IRAM_ATTR void Apu2A03::triangleChannelClock(triangleChannel& triangle, bool ena
 	if (triangle.seq.timer == 0)
 	{
 		triangle.seq.timer = triangle.seq.reload;
-		if (!(triangle.len_counter.timer > 0 && triangle.linear_counter.counter > 0))
+		if (!(triangle.len_counter.timer > 0 && triangle.lin_counter.counter > 0))
 			return;
 
 		if (triangle.seq.reload >= 2)
@@ -473,7 +473,7 @@ IRAM_ATTR void Apu2A03::DMCChannelClock(DMCChannel& DMC, bool enable)
 	}
 }
 
-IRAM_ATTR void Apu2A03::soundChannelEnvelopeClock(envelope& envelope)
+IRAM_ATTR void Apu2A03::soundChannelEnvelopeClock(envelopeUnit& envelope)
 {
 	if (envelope.start_flag)
 	{
@@ -536,15 +536,15 @@ IRAM_ATTR void Apu2A03::soundChannelLengthCounterClock(length_counter& len_count
 		len_counter.timer--;
 }
 
-IRAM_ATTR void Apu2A03::linearCounterClock(linear_counter& linear_counter)
+IRAM_ATTR void Apu2A03::linearCounterClock(linear_counter& lin_counter)
 {
-	if (linear_counter.reload_flag)
-		linear_counter.counter = linear_counter.reload;
-	else if (linear_counter.counter > 0)
-			linear_counter.counter--;
+	if (lin_counter.reload_flag)
+		lin_counter.counter = lin_counter.reload;
+	else if (lin_counter.counter > 0)
+			lin_counter.counter--;
 
-	if (linear_counter.control == 0)
-		linear_counter.reload_flag = false;
+	if (lin_counter.control == 0)
+		lin_counter.reload_flag = false;
 }
 
 inline void Apu2A03::setDMCBuffer()

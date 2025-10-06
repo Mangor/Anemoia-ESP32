@@ -72,7 +72,7 @@ private:
     { 428, 380, 340, 320, 286, 254, 226, 214, 190, 160, 142, 128, 106, 84, 72, 54 };
 
     // Sound channel components
-	struct sequencer
+	struct sequencerUnit
 	{
 		uint8_t duty_cycle = 0x00;
 		uint8_t cycle_position = 0x00;
@@ -87,7 +87,7 @@ private:
 		uint8_t counter = 0x00;
 		uint8_t reload = 0x00;
 	};
-	struct envelope
+	struct envelopeUnit
 	{
 		bool start_flag = false;
 		bool loop = false;
@@ -97,7 +97,7 @@ private:
 		uint8_t output = 0x00;
 		uint8_t decay_level_counter = 0x00;
 	};
-	struct sweep
+	struct sweepUnit
 	{
 		bool enable = false;
 		bool negate = false;
@@ -132,20 +132,20 @@ private:
 	// Sound Channels 
 	struct pulseChannel
 	{
-		sequencer seq;
-		envelope env;
-		sweep sweep;
+		sequencerUnit seq;
+		envelopeUnit env;
+		sweepUnit sweep;
 		length_counter len_counter;
 	};
 	struct triangleChannel
 	{
-		sequencer seq;
+		sequencerUnit seq;
 		length_counter len_counter;
-		linear_counter linear_counter;
+		linear_counter lin_counter;
 	};
 	struct noiseChannel
 	{
-		envelope env;
+		envelopeUnit env;
 		length_counter len_counter;
 		uint16_t timer = 0x0000;
 		uint16_t reload = 0x0000;
@@ -190,15 +190,15 @@ private:
 
 	void generateSample();
 
-	void pulseChannelClock(sequencer& seq, bool enable);
+	void pulseChannelClock(sequencerUnit& seq, bool enable);
 	void triangleChannelClock(triangleChannel& triangle, bool enable);
 	void noiseChannelClock(noiseChannel& noise, bool enable);
 	void DMCChannelClock(DMCChannel& DMC, bool enable);
     
-	void soundChannelEnvelopeClock(envelope& envelope);
+	void soundChannelEnvelopeClock(envelopeUnit& envelope);
 	void soundChannelSweeperClock(pulseChannel& channel);
 	void soundChannelLengthCounterClock(length_counter& len_counter);
-	void linearCounterClock(linear_counter& linear_counter);
+	void linearCounterClock(linear_counter& lin_counter);
 
 	void setDMCBuffer();
 };
