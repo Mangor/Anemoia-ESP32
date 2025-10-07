@@ -174,10 +174,6 @@ private:
     uint8_t* ptr_attribute = nullptr;
     uint8_t* ptr_pattern_tile = nullptr;
     uint8_t* ptr_scanline_meta = nullptr;
-    
-    static constexpr uint8_t pixel_shift[16] = 
-    { 14, 6, 12, 4, 10, 2, 8, 0,
-      0, 8, 2, 10, 4, 12, 6, 14 }; // Shifts to get the bits of a pixel
 
     uint8_t sprite_count = 0;
 public:
