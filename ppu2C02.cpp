@@ -278,6 +278,7 @@ void Ppu2C02::renderSprites(uint16_t scanline)
 {
     if (!mask.render_sprite) 
     {
+        ptr_buffer = scanline_buffer + x;
         finishScanline(scanline);
         return;
     }
