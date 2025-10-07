@@ -60,20 +60,6 @@ public:
     uint16_t temp = 0x0000;
 
 private: 
-    // struct OPCODE
-	// {
-	// 	uint8_t(Cpu6502::* instruction)(void) = nullptr;
-	// 	uint8_t(Cpu6502::* addrmode)(void) = nullptr;
-	// 	uint8_t cycles = 0;
-	// };
-    
-
-    // Cached instruction
-    // struct CachedInstruction
-    // {
-    //     const 
-    // }
-
 	Bus* bus = nullptr;
     bool addrmode_immediate = false;
     bool addrmode_implied = false;
@@ -112,7 +98,6 @@ private:
     // Instruction cycle count
     static const uint8_t instr_cycles[256];
     static const uint8_t zn_table[256];
-    //static const OPCODE lookup[256];
 
     void DMC_DMA_Load();
     void DMC_DMA_Reload();
