@@ -1,8 +1,22 @@
 #include "ppu2C02.h"
 #include "bus.h"
 
+
 #define READ_PALETTE(x) palette_table[((x) & 0x1F) ^ (((x) & 0x13) == 0x10 ? 0x10 : 0x00)]
 DMA_ATTR uint16_t Ppu2C02::display_buffer[SCANLINE_SIZE * SCANLINES_PER_BUFFER];
+
+// NTSC Palette in RGB565
+static constexpr DRAM_ATTR uint16_t nes_palette[64] = 
+{
+    0x528A, 0x00CA, 0x086C, 0x202C, 0x3009, 0x4024, 0x3840, 0x3080,
+    0x1900, 0x0940, 0x0160, 0x0161, 0x0125, 0x0000, 0x0000, 0x0000,
+    0xA514, 0x1A53, 0x39B7, 0x5957, 0x7112, 0x810B, 0x8164, 0x69E0,
+    0x5280, 0x3300, 0x1B40, 0x0B45, 0x12ED, 0x0000, 0x0000, 0x0000,
+    0xFFFF, 0x6CFF, 0x8C3F, 0xABBF, 0xCB7E, 0xE396, 0xDBEE, 0xCC87,
+    0xA524, 0x85C5, 0x6628, 0x560F, 0x5598, 0x39E7, 0x0000, 0x0000,
+    0xFFFF, 0xBEBF, 0xCE7F, 0xDE3F, 0xEE1F, 0xF61B, 0xF638, 0xEE95,
+    0xDED3, 0xCF13, 0xBF35, 0xB738, 0xB6FC, 0xAD55, 0x0000, 0x0000,
+};
 
 Ppu2C02::Ppu2C02()
 {
@@ -193,8 +207,8 @@ IRAM_ATTR void Ppu2C02::renderScanline()
     attribute_shift = ((y_tile & 2) << 1) + (x_tile & 2);
     attribute = ((attribute_byte >> attribute_shift) & 3) << 2;
 
-    static constexpr uint8_t pixel_shift[8] = { 14, 6, 12, 4, 10, 2, 8, 0 }; // Shifts to get the bits of a pixel
-    static constexpr uint8_t pixel_metadata[4] = { 0x80, 0x00, 0x00, 0x00 };
+    static constexpr DRAM_ATTR uint8_t pixel_shift[8] = { 14, 6, 12, 4, 10, 2, 8, 0 }; // Shifts to get the bits of a pixel
+    static constexpr DRAM_ATTR uint8_t pixel_metadata[4] = { 0x80, 0x00, 0x00, 0x00 };
     for (int tile = 0; tile < 33; tile++)
     {
         tile_index = *ptr_tile++;
