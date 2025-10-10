@@ -41,7 +41,6 @@ public:
     void insertCartridge(Cartridge* cartridge);
     void connectScreen(TFT_eSPI* screen);
     void reset();
-    void resetClock();
     void clock();
     void IRQ();
     void NMI();
@@ -53,8 +52,6 @@ private:
     void cpuClock();
     void renderScanline(uint16_t scanline);
     TFT_eSPI* ptr_screen;
-    uint16_t system_clock_counter = 0;
-    uint16_t cpu_clock = 0;
     uint8_t controller_state;
     uint8_t controller_strobe = 0x00;
     bool frame_latch = false;

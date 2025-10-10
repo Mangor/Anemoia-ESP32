@@ -68,16 +68,8 @@ void Bus::reset()
 {
     ptr_screen->fillScreen(TFT_BLACK);
 	for (auto& i : RAM) i = 0x00;
-	//cart->reset();
 	cpu.reset();
 	ppu.reset();
-	//apu.reset();
-	system_clock_counter = 0;
-}
-
-void Bus::resetClock()
-{
-	system_clock_counter = 0;
 }
 
 IRAM_ATTR void Bus::clock()
