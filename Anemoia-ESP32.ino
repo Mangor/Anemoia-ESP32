@@ -216,7 +216,7 @@ void selectGame()
     unsigned long total_frame_time = 0;
     unsigned long frame_count = 0;
 #endif
-void emulate()
+IRAM_ATTR void emulate()
 {
     Bus nes;
     nes.insertCartridge(cart);
