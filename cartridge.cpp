@@ -34,24 +34,10 @@ Cartridge::Cartridge(const char* filename)
     case 1:
         number_PRG_banks = header.PRG_ROM_chunks;
         number_CHR_banks = header.CHR_ROM_chunks;
-
-        // PRG_memory.resize(number_PRG_banks * 16384);
-        // file.read((uint8_t*)PRG_memory.data(), PRG_memory.size());
-
-        // if (number_CHR_banks == 0) CHR_memory.resize(8192);
-        // else CHR_memory.resize(number_CHR_banks * 8192);
-        // file.read((uint8_t*)CHR_memory.data(), CHR_memory.size());
         break;
     case 2:
         number_PRG_banks = ((header.PRG_RAM_size & 0x07) << 8) | header.PRG_ROM_chunks;
         number_CHR_banks = ((header.PRG_RAM_size & 0x38) << 8) | header.CHR_ROM_chunks;
-
-        // PRG_memory.resize(number_PRG_banks * 16384);
-        // file.read((uint8_t*)PRG_memory.data(), PRG_memory.size());
-
-        // if (number_CHR_banks == 0) CHR_memory.resize(8192);
-        // else CHR_memory.resize(number_CHR_banks * 8192);
-        // file.read((uint8_t*)CHR_memory.data(), CHR_memory.size());
         break;
     }
 
