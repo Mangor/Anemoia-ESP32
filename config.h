@@ -1,6 +1,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// MicroSD card configuration
+#define SD_FREQ 80000000
+
 // Screen Configuration
 #define SCREEN_ROTATION 1 // Screen orientation: 1 or 3 (1 = landscape, 3 = landscape flipped)
 #define SCREEN_SWAP_BYTES true // Set to false if colors appear wrong

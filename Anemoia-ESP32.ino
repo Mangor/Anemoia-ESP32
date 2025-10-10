@@ -69,9 +69,9 @@ bool initSD()
 {
     Serial.println("Initializing SD...");
     SD_SPI.begin(SD_SCLK_PIN, SD_MISO_PIN, SD_MOSI_PIN, SD_CS_PIN);
-    if (!SD.begin(SD_CS_PIN, SD_SPI, 80000000)) 
+    if (!SD.begin(SD_CS_PIN, SD_SPI, SD_FREQ)) 
     {
-        Serial.println("SD.begin() failed");
+        Serial.println("SD Card Mount Failed");
         return false;
     }
 
