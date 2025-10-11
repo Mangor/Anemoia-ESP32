@@ -50,7 +50,6 @@ public:
 
 private:
     void cpuClock();
-    void renderScanline(uint16_t scanline);
     TFT_eSPI* ptr_screen;
     uint8_t controller_state;
     uint8_t controller_strobe = 0x00;

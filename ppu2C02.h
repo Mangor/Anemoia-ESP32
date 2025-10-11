@@ -25,13 +25,10 @@ public:
     void cpuWrite(uint16_t addr, uint8_t data);
     uint8_t cpuRead(uint16_t addr);
 
-    void renderScanline();
-    void renderSprites(uint16_t scanline);
+    void renderScanline(uint16_t scanline);
     void fakeSpriteHit(uint16_t scanline);
     void setVBlank();
     void clearVBlank();
-    void transferScroll(uint16_t scanline);
-    void incrementY();
     void reset();
 
     void connectBus(Bus* n) { bus = n; }
@@ -45,6 +42,10 @@ private:
     Cartridge* cart = nullptr;
     Bus* bus = nullptr;
 
+    void renderBackground();
+    void renderSprites(uint16_t scanline);
+    void transferScroll(uint16_t scanline);
+    void incrementY();
     void finishScanline(uint16_t scanline);
     uint16_t scanline_buffer[BUFFER_SIZE];
     uint8_t scanline_metadata[BUFFER_SIZE];
@@ -169,11 +170,5 @@ public:
     uint16_t* ptr_buffer = scanline_buffer;
     static constexpr uint16_t* ptr_display = display_buffer;
 };
-
-inline IRAM_ATTR void Ppu2C02::transferScroll(uint16_t scanline)
-{
-    if (!(mask.reg & (1 << 3) || mask.reg & (1 << 4))) return;
-    v.reg = (scanline == 0) ? t.reg : v.reg = (v.reg & ~0x041F) | (t.reg & 0x041F);
-}
 
 #endif

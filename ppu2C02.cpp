@@ -161,7 +161,22 @@ IRAM_ATTR void Ppu2C02::clearVBlank()
     status.sprite_overflow = 0;
 }
 
-IRAM_ATTR void Ppu2C02::incrementY()
+IRAM_ATTR void Ppu2C02::renderScanline(uint16_t scanline)
+{
+    transferScroll(scanline);
+    renderBackground();
+    renderSprites(scanline);
+    incrementY();
+    finishScanline(scanline);
+}
+
+inline void Ppu2C02::transferScroll(uint16_t scanline)
+{
+    if (!(mask.reg & (1 << 3) || mask.reg & (1 << 4))) return;
+    v.reg = (scanline == 0) ? t.reg : v.reg = (v.reg & ~0x041F) | (t.reg & 0x041F);
+}
+
+inline void Ppu2C02::incrementY()
 {
     if (!(mask.render_background || mask.render_sprite)) return;
 
@@ -181,7 +196,7 @@ IRAM_ATTR void Ppu2C02::incrementY()
     else v.coarse_y++;
 }
 
-IRAM_ATTR void Ppu2C02::renderScanline()
+inline void Ppu2C02::renderBackground()
 {   
     // Show transparency pixel if not rendering background
     if (!mask.render_background)
@@ -250,14 +265,13 @@ IRAM_ATTR void Ppu2C02::renderScanline()
             attribute = ((attribute_byte >> attribute_shift) & 0x03) << 2;
         }
     }
+    ptr_buffer = scanline_buffer + x;
 }
 
-void Ppu2C02::renderSprites(uint16_t scanline)
+inline void Ppu2C02::renderSprites(uint16_t scanline)
 {
     if (!mask.render_sprite) 
     {
-        ptr_buffer = scanline_buffer + x;
-        finishScanline(scanline);
         return;
     }
 
@@ -385,7 +399,6 @@ void Ppu2C02::renderSprites(uint16_t scanline)
 
     ptr_buffer = buffer_offset;
     cart->ppuScanline();
-    finishScanline(scanline);
 }
 
 void Ppu2C02::fakeSpriteHit(uint16_t scanline)

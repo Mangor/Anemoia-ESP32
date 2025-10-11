@@ -84,25 +84,25 @@ IRAM_ATTR void Bus::clock()
     for (ppu_scanline = 0; ppu_scanline < 240; ppu_scanline += 3)
     {
         #ifndef FRAMESKIP
-            renderScanline(ppu_scanline);
+            ppu.renderScanline(ppu_scanline);
         #else
-            if (frame_latch) { renderScanline(ppu_scanline); }
+            if (frame_latch) { ppu.renderScanline(ppu_scanline); }
             else { ppu.fakeSpriteHit(ppu_scanline); }
         #endif
         cpu.clock(113);
 
         #ifndef FRAMESKIP
-            renderScanline(ppu_scanline + 1);
+            ppu.renderScanline(ppu_scanline + 1);
         #else
-            if (frame_latch) { renderScanline(ppu_scanline + 1); }
+            if (frame_latch) { ppu.renderScanline(ppu_scanline + 1); }
             else { ppu.fakeSpriteHit(ppu_scanline + 1); }
         #endif
         cpu.clock(114);
 
         #ifndef FRAMESKIP
-            renderScanline(ppu_scanline + 2);
+            ppu.renderScanline(ppu_scanline + 2);
         #else
-            if (frame_latch) { renderScanline(ppu_scanline + 2); }
+            if (frame_latch) { ppu.renderScanline(ppu_scanline + 2); }
             else { ppu.fakeSpriteHit(ppu_scanline + 2); }
         #endif
         cpu.clock(114);
@@ -144,14 +144,6 @@ void Bus::insertCartridge(Cartridge* cartridge)
 void Bus::connectScreen(TFT_eSPI* screen)
 {
     ptr_screen = screen;
-}
-
-inline void Bus::renderScanline(uint16_t scanline)
-{
-    ppu.transferScroll(scanline);
-    ppu.renderScanline();
-    ppu.renderSprites(scanline);
-    ppu.incrementY();
 }
 
 IRAM_ATTR void Bus::renderImage(uint16_t scanline)
