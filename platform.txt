@@ -32,8 +32,8 @@ compiler.sdk.path.windows={tools.esp32-arduino-libs.path}\{build.mcu}
 
 # EXPERIMENTAL feature: optimization flags
 #  - this is alpha and may be subject to change without notice
-compiler.optimization_flags=-Ofast -ffunction-sections -fdata-sections -fstrict-aliasing -funroll-loops -flto -mlongcalls
-compiler.optimization_flags.release=-Ofast -ffunction-sections -fdata-sections -fstrict-aliasing -funroll-loops -flto -mlongcalls
+compiler.optimization_flags=-Ofast -ffunction-sections -fdata-sections -fstrict-aliasing -funroll-loops -fjump-tables -ftree-switch-conversion -flto -mlongcalls
+compiler.optimization_flags.release=-Ofast -ffunction-sections -fdata-sections -fstrict-aliasing -funroll-loops -fjump-tables -ftree-switch-conversion -flto -mlongcalls
 compiler.optimization_flags.debug=-Og -g3
 
 # Arduino Compile Warning Levels
