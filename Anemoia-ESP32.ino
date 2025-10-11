@@ -234,16 +234,15 @@ IRAM_ATTR void emulate()
     );
 
     #ifdef DEBUG
-        last_frame_time = micros();
+        last_frame_time = esp_timer_get_time();
     #endif
 
-    while (true)
+    // Target frame time: 16639µs (60.98 FPS)
+    #define FRAME_TIME 16639
+    uint64_t next_frame = esp_timer_get_time();
+    // Emulation Loop
+    while (true) 
     {
-        // Emulation Loop
-        #ifdef DEBUG
-            current_frame_time = micros();
-        #endif
-
         // Read button input
         nes.controller = 0;
         if (digitalRead(A_BUTTON)      == LOW) nes.controller |= (Bus::CONTROLLER::A);
@@ -259,8 +258,8 @@ IRAM_ATTR void emulate()
         nes.clock();
 
         #ifdef DEBUG
-            unsigned long frame_duration = current_frame_time - last_frame_time; 
-            total_frame_time += frame_duration;
+            current_frame_time = esp_timer_get_time();
+            total_frame_time += (current_frame_time - last_frame_time);
             frame_count++;
 
             if ((frame_count & 63) == 0)
@@ -273,5 +272,11 @@ IRAM_ATTR void emulate()
 
             last_frame_time = current_frame_time;
         #endif
+
+        // Frame limiting
+        uint64_t now = esp_timer_get_time();
+        if (now < next_frame) ets_delay_us(next_frame - now);
+        next_frame += FRAME_TIME;
     }
+    #undef FRAME_TIME
 }
