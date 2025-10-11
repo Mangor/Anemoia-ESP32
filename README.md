@@ -16,6 +16,25 @@
 
 ---
 
+## Performance
+Anemoia-ESP32 is heavily optimized to achieve native NES speeds on the ESP32, running at ~60.098 FPS (NTSC) with full audio emulation enabled.
+
+Here are the performance benchmarks for several popular NES games. 
+> [!NOTE]
+> The following benchmarks show average framerates recorded over 8192 frames (~2 minutes) of emulation time. Some games, such as `Kirby's Adventure`, which frequently switch banks may experience significant FPS drops in certain sections.
+
+| Game                    | Mapper    | Average FPS   |
+|-------------------------|-----------|---------------|
+| **Super Mario Bros.**   | NROM (0)  | **60.10 FPS** |
+| **Contra**              | UxROM (2) | **60.10 FPS** |
+| **The Legend of Zelda** | MMC1 (1)  | **60.10 FPS** |
+| **Mega Man 2**          | MMC1 (1)  | **60.10 FPS** |
+| **Castlevania**         | UxROM (2) | **60.10 FPS** |
+| **Metroid**             | MMC1 (1)  | **60.10 FPS** |
+| **Kirby’s Adventure**   | MMC3 (4)  | **59.57 FPS** |
+| **Donkey Kong**         | NROM (0)  | **60.10 FPS** |
+
+
 ## Compatibility
 
 As of now, Anemoia-ESP32 has implemented five major memory mappers, totalling to around 79% of the entire NES game catalogue. 
