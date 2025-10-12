@@ -23,6 +23,8 @@ Ppu2C02::Ppu2C02()
     memset(nametable, 0, sizeof(nametable));
     memset(palette_table, 0, sizeof(palette_table));
     memset(scanline_buffer, 0, sizeof(scanline_buffer));
+    memset(scanline_metadata, 0, sizeof(scanline_metadata));
+    memset(display_buffer, 0, sizeof(display_buffer));
     memset(sprite, 0, sizeof(sprite));
 }
 
@@ -201,7 +203,15 @@ inline void Ppu2C02::renderBackground()
     // Show transparency pixel if not rendering background
     if (!mask.render_background)
     {
-        memset(scanline_buffer, nes_palette[palette_table[0]], BUFFER_SIZE * sizeof(uint16_t));
+        uint16_t bg_color = nes_palette[palette_table[0]];
+        uint32_t color32 = ((uint32_t)bg_color << 16) | bg_color;
+        uint32_t* buffer = (uint32_t*)scanline_buffer;
+        for (int i = 0, size = (BUFFER_SIZE >> 1); i < size; i++) 
+            buffer[i] = color32;
+
+        memset(scanline_metadata, 0x80, BUFFER_SIZE);
+        ptr_buffer = scanline_buffer + x;
+        ptr_scanline_meta = scanline_metadata + x;
         return;
     }
 

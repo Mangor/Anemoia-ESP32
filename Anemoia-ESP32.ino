@@ -259,7 +259,7 @@ IRAM_ATTR void emulate()
         last_frame_time = esp_timer_get_time();
     #endif
 
-    // Target frame time: 16639µs (60.98 FPS)
+    // Target frame time: 16639µs (60.098 FPS)
     #define FRAME_TIME 16639
     uint64_t next_frame = esp_timer_get_time();
     // Emulation Loop
