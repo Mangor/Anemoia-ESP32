@@ -71,7 +71,29 @@ bool initSD()
     SD_SPI.begin(SD_SCLK_PIN, SD_MISO_PIN, SD_MOSI_PIN, SD_CS_PIN);
     if (!SD.begin(SD_CS_PIN, SD_SPI, SD_FREQ)) 
     {
-        Serial.println("SD Card Mount Failed");
+        #ifdef DEBUG
+            Serial.println("SD Card Mount Failed");
+        #endif
+
+        screen.setTextSize(2);
+        const char* txt1 = "SD Init failed!";
+        const char* txt2 = "Insert SD card or";
+        const char* txt3 = "lower SD frequency";
+        const char* txt4 = "in config.h";
+        int w1 = screen.textWidth(txt1, 2);
+        int w2 = screen.textWidth(txt2, 2);
+        int w3 = screen.textWidth(txt3, 2);
+        int w4 = screen.textWidth(txt4, 2);
+        
+        int x1 = (320 - w1) / 2;
+        int x2 = (320 - w2) / 2;
+        int x3 = (320 - w3) / 2;
+        int x4 = (320 - w4) / 2;
+
+        screen.drawString(txt1, x1, 56, 2);
+        screen.drawString(txt2, x2, 88, 2);
+        screen.drawString(txt3, x3, 120, 2);
+        screen.drawString(txt4, x4, 152, 2);
         return false;
     }
 
