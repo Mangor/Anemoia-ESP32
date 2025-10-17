@@ -34,6 +34,7 @@ public:
     uint8_t* ppuReadPtr(uint16_t addr);
 	bool ppuWrite(uint16_t addr, uint8_t data);
     void ppuScanline();
+    void reset();
     
     void loadPRGBank(uint8_t* bank, uint16_t size, uint32_t offset);
     void loadCHRBank(uint8_t* bank, uint16_t size, uint32_t offset);

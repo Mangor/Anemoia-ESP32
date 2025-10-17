@@ -32,6 +32,7 @@ struct MapperVTable
     bool (*ppuWrite)(Mapper* mapper, uint16_t addr, uint8_t data);
     uint8_t* (*ppuReadPtr)(Mapper* mapper, uint16_t addr);
     void (*scanline)(Mapper* mapper);
+    void (*reset)(Mapper* mapper);
 };
 
 struct Bank

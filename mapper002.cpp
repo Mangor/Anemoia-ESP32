@@ -54,13 +54,25 @@ IRAM_ATTR uint8_t* Mapper002_ppuReadPtr(Mapper* mapper, uint16_t addr)
     return &state->CHR_bank[addr];
 }
 
-const MapperVTable Mapper002_vtable = {
+void Mapper002_reset(Mapper* mapper)
+{
+    Mapper002_state* state = (Mapper002_state*)mapper->state;
+    state->ptr_16K_PRG_banks[0] = getBank(&state->prg_cache, 0, Mapper::ROM_TYPE::PRG_ROM);
+    state->ptr_16K_PRG_banks[1] = state->PRG_bank;
+
+    state->cart->loadPRGBank(state->ptr_16K_PRG_banks[1], 16*1024, 0x4000 * (state->number_PRG_banks - 1));
+    state->cart->loadCHRBank(state->CHR_bank, 8*1024, 0);
+}
+
+const MapperVTable Mapper002_vtable = 
+{
     Mapper002_cpuRead,
     Mapper002_cpuWrite,
     Mapper002_ppuRead,
     Mapper002_ppuWrite,
     Mapper002_ppuReadPtr,
     nullptr,
+    Mapper002_reset,
 };
 
 Mapper createMapper002(uint8_t PRG_banks, uint8_t CHR_banks, Cartridge* cart)
@@ -73,12 +85,6 @@ Mapper createMapper002(uint8_t PRG_banks, uint8_t CHR_banks, Cartridge* cart)
     state->number_PRG_banks = PRG_banks;
     state->number_CHR_banks = CHR_banks;
     state->cart = cart;
-
-    state->ptr_16K_PRG_banks[0] = getBank(&state->prg_cache, 0, Mapper::ROM_TYPE::PRG_ROM);
-    state->ptr_16K_PRG_banks[1] = state->PRG_bank;
-
-    cart->loadPRGBank(state->ptr_16K_PRG_banks[1], 16*1024, 0x4000 * (state->number_PRG_banks - 1));
-    cart->loadCHRBank(state->CHR_bank, 8*1024, 0);
 
     mapper.state = state;
     return mapper;

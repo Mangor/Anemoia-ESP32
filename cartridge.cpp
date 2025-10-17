@@ -90,6 +90,11 @@ void Cartridge::ppuScanline()
         mapper.vtable->scanline(&mapper);
 }
 
+void Cartridge::reset()
+{
+    mapper.vtable->reset(&mapper);
+}
+
 IRAM_ATTR void Cartridge::loadPRGBank(uint8_t* bank, uint16_t size, uint32_t offset)
 {
     rom.seek(prg_base + offset);

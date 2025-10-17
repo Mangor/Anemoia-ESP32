@@ -204,30 +204,13 @@ IRAM_ATTR uint8_t* Mapper001_ppuReadPtr(Mapper* mapper, uint16_t addr)
     }
 }
 
-const MapperVTable Mapper001_vtable = {
-    Mapper001_cpuRead,
-    Mapper001_cpuWrite,
-    Mapper001_ppuRead,
-    Mapper001_ppuWrite,
-    Mapper001_ppuReadPtr,
-    nullptr,    
-};
-
-Mapper createMapper001(uint8_t PRG_banks, uint8_t CHR_banks, Cartridge* cart)
+void Mapper001_reset(Mapper* mapper)
 {
-    Mapper mapper;
-    mapper.vtable = &Mapper001_vtable; 
-    Mapper001_state* state = new Mapper001_state;
-
-    bankInit(&state->PRG_16K_cache, state->PRG_banks_16K, MAPPER001_NUM_PRG_BANKS_16K, 16*1024, cart);
-    state->RAM = (uint8_t*)malloc(8*1024);
+    Mapper001_state* state = (Mapper001_state*)mapper->state;
     memset(state->RAM, 0, 8 * 1024);
 
-    if (CHR_banks == 0) 
+    if (state->number_CHR_banks == 0) 
     {
-        // Allocate one shared 8 KB RAM
-        state->CHR_RAM = (uint8_t*)malloc(8 * 1024);
-        memset(state->CHR_RAM, 0, 8 * 1024);
         // Point 4K banks into the same memory
         state->ptr_8K_CHR_bank = state->CHR_RAM;
         state->ptr_4K_CHR_banks[0] = state->CHR_RAM;
@@ -235,21 +218,62 @@ Mapper createMapper001(uint8_t PRG_banks, uint8_t CHR_banks, Cartridge* cart)
     }
     else
     {
-        bankInit(&state->CHR_8K_cache, state->CHR_banks_8K, MAPPER001_NUM_CHR_BANKS_8K, 8*1024, cart);
-        bankInit(&state->CHR_4K_cache, state->CHR_banks_4K, MAPPER001_NUM_CHR_BANKS_4K, 4*1024, cart);
         state->ptr_8K_CHR_bank = getBank(&state->CHR_8K_cache, 0, Mapper::ROM_TYPE::CHR_ROM);
         state->ptr_4K_CHR_banks[0] = getBank(&state->CHR_4K_cache, 0, Mapper::ROM_TYPE::CHR_ROM);
         state->ptr_4K_CHR_banks[1] = getBank(&state->CHR_4K_cache, 0, Mapper::ROM_TYPE::CHR_ROM);
     }
 
+    state->ptr_16K_PRG_banks[0] = getBank(&state->PRG_16K_cache, 0, Mapper::ROM_TYPE::PRG_ROM);
+    state->ptr_16K_PRG_banks[1] = getBank(&state->PRG_16K_cache, state->number_PRG_banks - 1, Mapper::ROM_TYPE::PRG_ROM);
+    state->ptr_16K_PRG_banks[2] = getBank(&state->PRG_16K_cache, 0, Mapper::ROM_TYPE::PRG_ROM);
+    state->ptr_16K_PRG_banks[3] = getBank(&state->PRG_16K_cache, 1, Mapper::ROM_TYPE::PRG_ROM);
+
+    state->load = 0x00;
+	state->control = 0x1C;
+    state->load_writes = 0;
+    state->PRG_ROM_bank_mode = 0x03;
+	state->CHR_ROM_bank_mode = 0;
+    state->CHR_bank_0 = 0x00;
+	state->CHR_bank_1 = 0x00;
+	state->PRG_bank = 0x00;
+    state->cart->setMirrorMode(Cartridge::MIRROR::HORIZONTAL);
+}
+
+const MapperVTable Mapper001_vtable = 
+{
+    Mapper001_cpuRead,
+    Mapper001_cpuWrite,
+    Mapper001_ppuRead,
+    Mapper001_ppuWrite,
+    Mapper001_ppuReadPtr,
+    nullptr,
+    Mapper001_reset,
+};
+
+Mapper createMapper001(uint8_t PRG_banks, uint8_t CHR_banks, Cartridge* cart)
+{
+    Mapper mapper;
+    mapper.vtable = &Mapper001_vtable; 
+    Mapper001_state* state = new Mapper001_state;
+    
     state->number_PRG_banks = PRG_banks;
     state->number_CHR_banks = CHR_banks;
     state->cart = cart;
 
-    state->ptr_16K_PRG_banks[0] = getBank(&state->PRG_16K_cache, 0, Mapper::ROM_TYPE::PRG_ROM);
-    state->ptr_16K_PRG_banks[1] = getBank(&state->PRG_16K_cache, PRG_banks - 1, Mapper::ROM_TYPE::PRG_ROM);
-    state->ptr_16K_PRG_banks[2] = getBank(&state->PRG_16K_cache, 0, Mapper::ROM_TYPE::PRG_ROM);
-    state->ptr_16K_PRG_banks[3] = getBank(&state->PRG_16K_cache, 1, Mapper::ROM_TYPE::PRG_ROM);
+    bankInit(&state->PRG_16K_cache, state->PRG_banks_16K, MAPPER001_NUM_PRG_BANKS_16K, 16*1024, cart);
+    state->RAM = (uint8_t*)malloc(8*1024);
+
+    if (CHR_banks == 0) 
+    {
+        // Allocate one shared 8 KB RAM
+        state->CHR_RAM = (uint8_t*)malloc(8 * 1024);
+        memset(state->CHR_RAM, 0, 8 * 1024);
+    }
+    else
+    {
+        bankInit(&state->CHR_8K_cache, state->CHR_banks_8K, MAPPER001_NUM_CHR_BANKS_8K, 8*1024, cart);
+        bankInit(&state->CHR_4K_cache, state->CHR_banks_4K, MAPPER001_NUM_CHR_BANKS_4K, 4*1024, cart);
+    }
 
     mapper.state = state;
     return mapper;

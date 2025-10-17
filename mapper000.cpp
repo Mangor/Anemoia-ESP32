@@ -50,13 +50,27 @@ IRAM_ATTR uint8_t* mapper000_ppuReadPtr(Mapper* mapper, uint16_t addr)
     return &state->CHR_bank[addr];
 }
 
-const MapperVTable mapper000_vtable = {
+void mapper000_reset(Mapper* mapper)
+{
+    mapper000_state* state = (mapper000_state*)mapper->state;
+    state->PRG_banks[0] = &state->PRG_ROM[0];
+    state->PRG_banks[1] = (state->number_PRG_banks > 1) ? &state->PRG_ROM[16*1024] : &state->PRG_ROM[0];
+    state->CHR_bank = &state->CHR_ROM[0];
+
+    state->cart->loadPRGBank(state->PRG_banks[0], 16*1024, 0);
+    if (state->number_PRG_banks > 1) state->cart->loadPRGBank(state->PRG_banks[1], 16*1024, 16*1024);
+    state->cart->loadCHRBank(state->CHR_bank, 8*1024, 0);
+}
+
+const MapperVTable mapper000_vtable = 
+{
     mapper000_cpuRead,
     mapper000_cpuWrite,
     mapper000_ppuRead,
     mapper000_ppuWrite,
     mapper000_ppuReadPtr,
     nullptr,
+    mapper000_reset,
 };
 
 Mapper createMapper000(uint8_t PRG_banks, uint8_t CHR_banks, Cartridge* cart)
@@ -68,14 +82,6 @@ Mapper createMapper000(uint8_t PRG_banks, uint8_t CHR_banks, Cartridge* cart)
     state->number_PRG_banks = PRG_banks;
     state->number_CHR_banks = CHR_banks;
     state->cart = cart;
-
-    state->PRG_banks[0] = &state->PRG_ROM[0];
-    state->PRG_banks[1] = (state->number_PRG_banks > 1) ? &state->PRG_ROM[16*1024] : &state->PRG_ROM[0];
-    state->CHR_bank = &state->CHR_ROM[0];
-
-    cart->loadPRGBank(state->PRG_banks[0], 16*1024, 0);
-    if (state->number_PRG_banks > 1) cart->loadPRGBank(state->PRG_banks[1], 16*1024, 16*1024);
-    cart->loadCHRBank(state->CHR_bank, 8*1024, 0);
 
     mapper.state = state;
     return mapper;
