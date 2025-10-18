@@ -23,7 +23,7 @@ public:
     void cpuWrite(uint16_t addr, uint8_t data);
     uint8_t cpuRead(uint16_t addr);
     void clock();
-    void resetChannels();
+    void reset();
     static uint16_t audio_buffer[AUDIO_BUFFER_SIZE * 2];
 
     uint8_t DMC_sample_byte = 0;

@@ -14,6 +14,32 @@ Apu2A03::~Apu2A03()
 
 }
 
+void Apu2A03::reset()
+{
+	pulse1_enable = false;
+	pulse2_enable = false;
+	triangle_enable = false;
+	noise_enable = false;
+	DMC_enable = false;
+	IRQ = false;
+
+	pulse1.len_counter.timer = 0;
+	pulse2.len_counter.timer = 0;
+	triangle.len_counter.timer = 0;
+	noise.len_counter.timer = 0;
+
+	DMC.output_unit.output_level = 0;
+	DMC.output_unit.remaining_bits = 0;
+	DMC.output_unit.shift_register = 0;
+	DMC.memory_reader.address = 0;
+	DMC.memory_reader.remaining_bytes = 0;
+	DMC.timer = 0;
+	DMC.sample_address = 0;
+	DMC.sample_buffer = 0;
+	DMC.sample_length = 0;
+	DMC.output_unit.silence_flag = true;
+}
+
 
 IRAM_ATTR void Apu2A03::cpuWrite(uint16_t addr, uint8_t data)
 {

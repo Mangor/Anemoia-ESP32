@@ -70,7 +70,7 @@ void Bus::reset()
 	for (auto& i : RAM) i = 0x00;
     cart->reset();
 	cpu.reset();
-    //cpu.apu.reset();
+    cpu.apu.reset();
 	ppu.reset();
 }
 
