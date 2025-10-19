@@ -55,22 +55,22 @@ Feel free to open an issue if a game has glitches or fails to boot.
 | Component         | Signal   | ESP32 Pin |
 |-------------------|----------|-----------|
 | **MicroSD Module**| MOSI     | 13        |
-|                   | MISO     | 14        |
+|                   | MISO     | 34        |
 |                   | SCLK     | 26        |
-|                   | CS       | 19        |
+|                   | CS       | GND       |
 | **TFT Display**   | MOSI     | 23        |
 |                   | MISO     | -1 (N/A)  |
 |                   | SCLK     | 18        |
 |                   | CS       | 4         |
 |                   | DC       | 2         |
-|                   | RST      | 5         |
+|                   | RST      | EN        |
 | **PAM8403**       | L        | 25        |
 | **Buttons**       | A        | 22        |
 |                   | B        | 21        |
 |                   | Left     | 0         |
-|                   | Right    | 17        |
-|                   | Up       | 16        |
-|                   | Down     | 33        |
+|                   | Right    | 12        |
+|                   | Up       | 15        |
+|                   | Down     | 5         |
 |                   | Start    | 32        |
 |                   | Select   | 27        |
 
