@@ -331,7 +331,7 @@ void drawWindowBox(int x, int y, int w, int h)
     screen.drawRect(x+4, y+3, w-8, h-7, TFT_WHITE);
     screen.drawRect(x+5, y+3, w-10, h-7, TFT_WHITE);
 
-    char* text1 = " ANEMOIA.CPP ";
+    const char* text1 = " ANEMOIA.CPP ";
     screen.setTextColor(TEXT_COLOR, BG_COLOR);
     screen.setCursor((screen.width() - screen.textWidth(text1)) / 2, 20);
     screen.print(text1);
@@ -343,7 +343,7 @@ void drawBars()
     screen.fillRect(0, 0, screen.width(), 16, BAR_COLOR);
     screen.setTextColor(TFT_BLACK, BAR_COLOR);
 
-    char* text1 = "ANEMOIA-ESP32";
+    const char* text1 = "ANEMOIA-ESP32";
     screen.setCursor((screen.width() - screen.textWidth(text1)) / 2, 4);
     screen.print(text1);
 
@@ -377,7 +377,7 @@ void pauseMenu(Bus* nes)
 
     // Draw bars with text
     drawBars();
-    char* text2 = "Pause";
+    const char* text2 = "Pause";
     int text2_x = screen.width() - screen.textWidth(text2) - 12;
     screen.fillRect(text2_x - 4, 0, screen.textWidth(text2) + 8, 16, SELECTED_BG_COLOR);
     screen.setTextColor(TFT_BLACK, SELECTED_BG_COLOR);
