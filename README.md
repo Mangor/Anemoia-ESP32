@@ -14,6 +14,10 @@
   Anemoia-ESP32 is available on GitHub under the <a href="https://github.com/Shim06/Anemoia-ESP32/blob/main/LICENSE" target="_blank">GNU General Public License v3.0 (GPLv3)</a>.
 </p>
 
+<div align="center">
+  <video width="303" height="540" src="https://github.com/user-attachments/assets/883d7ffd-fc07-4092-86b9-3cb508239541"></video>
+</div>
+
 ---
 
 ## Performance
