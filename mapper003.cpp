@@ -50,6 +50,24 @@ void Mapper003_reset(Mapper* mapper)
     state->cart->loadPRGBank(state->PRG_bank, 32*1024, 0);
 }
 
+void Mapper003_dumpState(Mapper* mapper, File& state)
+{
+    Mapper003_state* s = (Mapper003_state*)mapper->state;
+
+    uint8_t CHR_bank = getBankIndex(&s->CHR_cache_8K, s->ptr_CHR_bank_8K);
+    state.write((uint8_t*)&CHR_bank, sizeof(CHR_bank));
+}
+
+void Mapper003_loadState(Mapper* mapper, File& state)
+{
+    Mapper003_state* s = (Mapper003_state*)mapper->state;
+
+    uint8_t CHR_bank;
+    state.read((uint8_t*)&CHR_bank, sizeof(CHR_bank));
+    invalidateCache(&s->CHR_cache_8K);
+    s->ptr_CHR_bank_8K = getBank(&s->CHR_cache_8K, CHR_bank, Mapper::ROM_TYPE::PRG_ROM);
+}
+
 const MapperVTable Mapper003_vtable = 
 {
     Mapper003_cpuRead,
@@ -59,6 +77,8 @@ const MapperVTable Mapper003_vtable =
     Mapper003_ppuReadPtr,
     nullptr,
     Mapper003_reset,
+    Mapper003_dumpState,
+    Mapper003_loadState,
 };
 
 Mapper createMapper003(uint8_t PRG_banks, uint8_t CHR_banks, Cartridge* cart)

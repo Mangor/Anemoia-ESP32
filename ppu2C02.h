@@ -34,10 +34,10 @@ public:
     void connectBus(Bus* n) { bus = n; }
     void connectCartridge(Cartridge* cartridge);
     void setMirror(Cartridge::MIRROR mirror);
+    Cartridge::MIRROR getMirror();
 
-    uint8_t buffer_index = 0;
-    bool nmi = false; 
-
+    void dumpState(File& state);
+    void loadState(File& state);
 private:
     Cartridge* cart = nullptr;
     Bus* bus = nullptr;

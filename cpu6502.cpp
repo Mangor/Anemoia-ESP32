@@ -1095,3 +1095,47 @@ void Cpu6502::NMI()
     SP -= 3;
     cycles = 8;
 }
+
+void Cpu6502::dumpState(File& state)
+{
+    state.write((uint8_t*)&A, sizeof(A));
+    state.write((uint8_t*)&X, sizeof(X));
+    state.write((uint8_t*)&Y, sizeof(Y));
+    state.write((uint8_t*)&PC, sizeof(PC));
+    state.write((uint8_t*)&SP, sizeof(SP));
+    state.write((uint8_t*)&status, sizeof(status));
+
+    state.write((uint8_t*)&fetched, sizeof(fetched));
+    state.write((uint8_t*)&addr_abs, sizeof(addr_abs));
+    state.write((uint8_t*)&addr_rel, sizeof(addr_rel));
+    state.write((uint8_t*)&opcode, sizeof(opcode));
+    state.write((uint8_t*)&cycles, sizeof(cycles));
+    state.write((uint8_t*)&temp, sizeof(temp));
+
+    state.write((uint8_t*)&addrmode_implied, sizeof(addrmode_implied));
+    state.write((uint8_t*)&additional_cycle1, sizeof(additional_cycle1));
+    state.write((uint8_t*)&additional_cycle2, sizeof(additional_cycle2));
+    state.write((uint8_t*)&OAM_DMA_page, sizeof(OAM_DMA_page));
+}
+
+void Cpu6502::loadState(File& state)
+{
+    state.read((uint8_t*)&A, sizeof(A));
+    state.read((uint8_t*)&X, sizeof(X));
+    state.read((uint8_t*)&Y, sizeof(Y));
+    state.read((uint8_t*)&PC, sizeof(PC));
+    state.read((uint8_t*)&SP, sizeof(SP));
+    state.read((uint8_t*)&status, sizeof(status));
+
+    state.read((uint8_t*)&fetched, sizeof(fetched));
+    state.read((uint8_t*)&addr_abs, sizeof(addr_abs));
+    state.read((uint8_t*)&addr_rel, sizeof(addr_rel));
+    state.read((uint8_t*)&opcode, sizeof(opcode));
+    state.read((uint8_t*)&cycles, sizeof(cycles));
+    state.read((uint8_t*)&temp, sizeof(temp));
+
+    state.read((uint8_t*)&addrmode_implied, sizeof(addrmode_implied));
+    state.read((uint8_t*)&additional_cycle1, sizeof(additional_cycle1));
+    state.read((uint8_t*)&additional_cycle2, sizeof(additional_cycle2));
+    state.read((uint8_t*)&OAM_DMA_page, sizeof(OAM_DMA_page));
+}

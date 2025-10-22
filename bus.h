@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <TFT_eSPI.h>
+#include <stdio.h>
 #include <stdint.h>
 #include "config.h"
 #include "cartridge.h"
@@ -37,6 +38,7 @@ public:
     void cpuWrite(uint16_t addr, uint8_t data);
     uint8_t cpuRead(uint16_t addr);
     void setPPUMirrorMode(Cartridge::MIRROR mirror);
+    Cartridge::MIRROR getPPUMirrorMode();
 
     void insertCartridge(Cartridge* cartridge);
     void connectScreen(TFT_eSPI* screen);
@@ -47,6 +49,9 @@ public:
     void OAM_Write(uint8_t addr, uint8_t data);
     uint16_t ppu_scanline = 0;
     void renderImage(uint16_t scanline);
+
+    void saveState();
+    void loadState();
 
 private:
     void cpuClock();

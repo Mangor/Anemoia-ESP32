@@ -125,9 +125,9 @@ IRAM_ATTR void emulate()
                 vTaskSuspend(apu_task_handle);
                 pauseMenu(&nes);
                 vTaskResume(apu_task_handle);
+                next_frame = esp_timer_get_time() + FRAME_TIME;
             }
         }
-
 
         // Generate one frame
         nes.clock();
@@ -370,6 +370,11 @@ void drawBars()
 
 void pauseMenu(Bus* nes)
 {
+    // Black magic stuff
+    // Padding bytes for code alignment for better performance
+    __attribute__((used, section(".text"), aligned(64)))
+    static const uint8_t padding[128] = {0};
+
     int prev_select = 0;
     int select = 0;
 
@@ -471,12 +476,16 @@ void pauseMenu(Bus* nes)
                     return;
 
                 case 2: // Quick Save State
-                    // TODO: Save state
-                    break;
+                    nes->saveState();
+                    screen.fillScreen(TFT_BLACK);
+                    screen.startWrite();
+                    return;
 
                 case 3: // Quick Load State
-                    // TODO: Load state
-                    break;
+                    nes->loadState();
+                    screen.fillScreen(TFT_BLACK);
+                    screen.startWrite();
+                    return;
 
                 case 4: // Save and Quit
                     ESP.restart();

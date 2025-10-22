@@ -2,6 +2,7 @@
 #define CPU6502_H
 
 #include <Arduino.h>
+#include <SD.h>
 #include <stdint.h>
 
 #include "apu2A03.h"
@@ -42,6 +43,9 @@ public:
     void IRQ();
     void NMI();
 
+    void dumpState(File& state);
+    void loadState(File& state);
+
     void connectBus(Bus* n) { bus = n; }
 
     // Registers 
@@ -61,7 +65,6 @@ public:
 
 private: 
 	Bus* bus = nullptr;
-    bool addrmode_immediate = false;
     bool addrmode_implied = false;
     uint8_t additional_cycle1 = 0;
     uint8_t additional_cycle2 = 0;

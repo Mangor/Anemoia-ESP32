@@ -549,3 +549,116 @@ void Ppu2C02::setMirror(Cartridge::MIRROR mirror)
             break;
     }
 }
+
+Cartridge::MIRROR Ppu2C02::getMirror()
+{
+    if (ptr_nametable[0] == &nametable[0x0000] && 
+        ptr_nametable[1] == &nametable[0x0400] &&
+        ptr_nametable[2] == &nametable[0x0000] &&
+        ptr_nametable[3] == &nametable[0x0400])
+        return Cartridge::MIRROR::VERTICAL;
+
+    if (ptr_nametable[0] == &nametable[0x0000] && 
+        ptr_nametable[1] == &nametable[0x0000] &&
+        ptr_nametable[2] == &nametable[0x0400] &&
+        ptr_nametable[3] == &nametable[0x0400])
+        return Cartridge::MIRROR::HORIZONTAL;
+
+    if (ptr_nametable[0] == &nametable[0x0000] && 
+        ptr_nametable[1] == &nametable[0x0000] &&
+        ptr_nametable[2] == &nametable[0x0000] &&
+        ptr_nametable[3] == &nametable[0x0000])
+        return Cartridge::MIRROR::ONESCREEN_LOW;
+
+    if (ptr_nametable[0] == &nametable[0x0400] && 
+        ptr_nametable[1] == &nametable[0x0400] &&
+        ptr_nametable[2] == &nametable[0x0400] &&
+        ptr_nametable[3] == &nametable[0x0400])
+        return Cartridge::MIRROR::ONESCREEN_HIGH;
+
+    return Cartridge::MIRROR::HORIZONTAL;
+}
+
+void Ppu2C02::dumpState(File& state)
+{
+    state.write((uint8_t*)scanline_buffer, sizeof(scanline_buffer));
+    state.write((uint8_t*)scanline_metadata, sizeof(scanline_metadata));
+    state.write(nametable, sizeof(nametable));
+    for (int i = 0; i < 4; i++)
+    {
+        uint8_t map = 0;
+        if (ptr_nametable[i] == &nametable[0x0400]) 
+            map = 1;
+
+        state.write((uint8_t*)&map, sizeof(map));
+    }
+    state.write(palette_table, sizeof(palette_table));
+    state.write((uint8_t*)&scanline_counter, sizeof(scanline_counter));
+
+    state.write((uint8_t*)&control.reg, sizeof(control.reg));
+    state.write((uint8_t*)&mask.reg, sizeof(mask.reg));
+    state.write((uint8_t*)&status.reg, sizeof(status.reg));
+    state.write((uint8_t*)&OAMADDR, sizeof(OAMADDR));
+    state.write((uint8_t*)&OAMDATA, sizeof(OAMDATA));
+
+    state.write((uint8_t*)sprite, sizeof(sprite));
+    state.write((uint8_t*)&v.reg, sizeof(v.reg));
+    state.write((uint8_t*)&t.reg, sizeof(t.reg));
+    state.write((uint8_t*)&x, sizeof(x));
+    state.write((uint8_t*)&w, sizeof(w));
+    state.write((uint8_t*)&PPUDATA_buffer, sizeof(PPUDATA_buffer));
+
+    state.write((uint8_t*)&offset, sizeof(offset));
+    state.write((uint8_t*)&nametable_index, sizeof(nametable_index));
+    state.write((uint8_t*)&nametable_byte_base, sizeof(nametable_byte_base));
+    state.write((uint8_t*)&attribute_byte_base, sizeof(attribute_byte_base));
+    state.write((uint8_t*)&nametable_byte, sizeof(nametable_byte));
+    state.write((uint8_t*)&attribute_byte, sizeof(attribute_byte));
+    state.write((uint8_t*)&x_tile, sizeof(x_tile));
+    state.write((uint8_t*)&y_tile, sizeof(y_tile));
+    state.write((uint8_t*)&attribute_shift, sizeof(attribute_shift));
+    state.write((uint8_t*)&attribute, sizeof(attribute));
+    state.write((uint8_t*)&tile_index, sizeof(tile_index));
+    state.write((uint8_t*)&sprite_count, sizeof(sprite_count));
+}
+
+void Ppu2C02::loadState(File& state)
+{
+    state.read((uint8_t*)scanline_buffer, sizeof(scanline_buffer));
+    state.read((uint8_t*)scanline_metadata, sizeof(scanline_metadata));
+    state.read(nametable, sizeof(nametable));
+    for (int i = 0; i < 4; i++)
+    {
+        uint8_t map = 0;
+        state.read(&map, sizeof(map));
+        ptr_nametable[i] = &nametable[(map == 0) ? 0x0000 : 0x0400];
+    }
+    state.read(palette_table, sizeof(palette_table));
+    state.read((uint8_t*)&scanline_counter, sizeof(scanline_counter));
+
+    state.read((uint8_t*)&control.reg, sizeof(control.reg));
+    state.read((uint8_t*)&mask.reg, sizeof(mask.reg));
+    state.read((uint8_t*)&status.reg, sizeof(status.reg));
+    state.read((uint8_t*)&OAMADDR, sizeof(OAMADDR));
+    state.read((uint8_t*)&OAMDATA, sizeof(OAMDATA));
+
+    state.read((uint8_t*)sprite, sizeof(sprite));
+    state.read((uint8_t*)&v.reg, sizeof(v.reg));
+    state.read((uint8_t*)&t.reg, sizeof(t.reg));
+    state.read((uint8_t*)&x, sizeof(x));
+    state.read((uint8_t*)&w, sizeof(w));
+    state.read((uint8_t*)&PPUDATA_buffer, sizeof(PPUDATA_buffer));
+
+    state.read((uint8_t*)&offset, sizeof(offset));
+    state.read((uint8_t*)&nametable_index, sizeof(nametable_index));
+    state.read((uint8_t*)&nametable_byte_base, sizeof(nametable_byte_base));
+    state.read((uint8_t*)&attribute_byte_base, sizeof(attribute_byte_base));
+    state.read((uint8_t*)&nametable_byte, sizeof(nametable_byte));
+    state.read((uint8_t*)&attribute_byte, sizeof(attribute_byte));
+    state.read((uint8_t*)&x_tile, sizeof(x_tile));
+    state.read((uint8_t*)&y_tile, sizeof(y_tile));
+    state.read((uint8_t*)&attribute_shift, sizeof(attribute_shift));
+    state.read((uint8_t*)&attribute, sizeof(attribute));
+    state.read((uint8_t*)&tile_index, sizeof(tile_index));
+    state.read((uint8_t*)&sprite_count, sizeof(sprite_count));
+}

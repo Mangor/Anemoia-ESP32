@@ -2,6 +2,7 @@
 #define MAPPER_H
 
 #include <cstring>
+#include <SD.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -33,6 +34,8 @@ struct MapperVTable
     uint8_t* (*ppuReadPtr)(Mapper* mapper, uint16_t addr);
     void (*scanline)(Mapper* mapper);
     void (*reset)(Mapper* mapper);
+    void (*dumpState)(Mapper* mapper, File& state);
+    void (*loadState)(Mapper* mapper, File& state);
 };
 
 struct Bank
@@ -53,5 +56,7 @@ struct BankCache
 
 void bankInit(BankCache* cache, Bank* banks, uint8_t num_banks, uint32_t bank_size, Cartridge* cart);
 uint8_t* getBank(BankCache* cache, uint8_t bank_id, Mapper::ROM_TYPE rom);
+uint8_t getBankIndex(BankCache* cache, uint8_t* ptr);
+void invalidateCache(BankCache* cache);
 
 #endif

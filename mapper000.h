@@ -3,7 +3,7 @@
 
 #include "mapper.h"
 
-struct mapper000_state
+struct Mapper000_state
 {
     Cartridge* cart;
     uint8_t number_PRG_banks;

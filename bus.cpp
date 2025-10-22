@@ -131,6 +131,11 @@ IRAM_ATTR void Bus::setPPUMirrorMode(Cartridge::MIRROR mirror)
     ppu.setMirror(mirror);
 }
 
+Cartridge::MIRROR Bus::getPPUMirrorMode()
+{
+    return ppu.getMirror();
+}
+
 IRAM_ATTR void Bus::OAM_Write(uint8_t addr, uint8_t data)
 {
     ppu.ptr_sprite[addr] = data;
@@ -161,4 +166,73 @@ IRAM_ATTR void Bus::IRQ()
 IRAM_ATTR void Bus::NMI()
 {
     cpu.NMI();
+}
+
+void Bus::saveState()
+{
+    if (!SD.exists("/states")) SD.mkdir("/states");
+    uint32_t CRC32 = cart->CRC32;
+
+    char CRC32_str[9];
+    sprintf(CRC32_str, "%08X", CRC32);
+
+    char filename[32];
+    sprintf(filename, "/states/%s.state", CRC32_str);
+
+    File state = SD.open(filename, FILE_WRITE);
+    if (!state) return;
+
+    // Header for verification - ANEMOIA + CRC32
+    state.print("ANEMOIA");
+    state.write((const uint8_t*)CRC32_str, 8);
+
+    // Dump state
+    state.write(RAM, sizeof(RAM));
+    cpu.dumpState(state);
+    ppu.dumpState(state);
+    cart->dumpState(state);
+
+    state.close();
+}
+
+void Bus::loadState()
+{
+    uint32_t CRC32 = cart->CRC32;
+
+    char CRC32_str[9];
+    sprintf(CRC32_str, "%08X", CRC32);
+
+    char filename[32];
+    sprintf(filename, "/states/%s.state", CRC32_str);
+    if (!SD.exists(filename)) return;
+
+    File state = SD.open(filename, FILE_READ);
+    if (!state) return;
+
+    // Verify header
+    char header[8];
+    char CRC[9];
+    state.read((uint8_t*)&header, 7);
+    header[7] = '\0';
+    state.read((uint8_t*)&CRC, 8);
+    CRC[8] = '\0';
+
+    if (strcmp(header, "ANEMOIA") != 0)
+    {
+        state.close();
+        return;
+    }
+    if (strcmp(CRC, CRC32_str) != 0)
+    {
+        state.close();
+        return;
+    }
+    
+    // Load state
+    state.read(RAM, sizeof(RAM));
+    cpu.loadState(state);
+    ppu.loadState(state);
+    cart->loadState(state);
+
+    state.close();
 }

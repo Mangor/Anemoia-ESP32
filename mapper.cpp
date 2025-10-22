@@ -61,3 +61,26 @@ IRAM_ATTR uint8_t* getBank(BankCache* cache, uint8_t bank_id, Mapper::ROM_TYPE r
 
     return bank;
 }
+
+uint8_t getBankIndex(BankCache* cache, uint8_t* ptr)
+{
+    for (int i = 0, banks = cache->num_banks; i < banks; i++)
+    {
+        if (cache->banks[i].bank_ptr == ptr)
+            return cache->banks[i].bank_id;
+    }
+
+    return 0;
+}
+
+void invalidateCache(BankCache* cache)
+{
+    if (!cache || !cache->banks) return;
+
+    cache->tick = 0;
+    for (int i = 0, n = cache->num_banks; i < n; i++)
+    {
+        cache->banks[i].bank_id = 0xFF;
+        cache->banks[i].last_used = 0;
+    }
+}
