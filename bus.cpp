@@ -155,7 +155,11 @@ void Bus::connectScreen(TFT_eSPI* screen)
 
 IRAM_ATTR void Bus::renderImage(uint16_t scanline)
 {
-    ptr_screen->pushImageDMA(32, scanline, 256, SCANLINES_PER_BUFFER, ppu.ptr_display);
+    #ifndef TFT_PARALLEL
+        ptr_screen->pushImageDMA(32, scanline, 256, SCANLINES_PER_BUFFER, ppu.ptr_display);
+    #else
+        ptr_screen->pushImage(32, scanline, 256, SCANLINES_PER_BUFFER, ppu.ptr_display);
+    #endif
 } 
 
 IRAM_ATTR void Bus::IRQ()

@@ -45,7 +45,9 @@ void setup()
     // Initialize TFT screen
     screen.begin();
     screen.setRotation(SCREEN_ROTATION);
-    screen.initDMA();
+    #ifndef TFT_PARALLEL
+        screen.initDMA();
+    #endif
     screen.fillScreen(BG_COLOR);
     screen.startWrite();
     screen.setSwapBytes(SCREEN_SWAP_BYTES);

@@ -7,6 +7,7 @@
 // Screen Configuration
 #define SCREEN_ROTATION 1 // Screen orientation: 1 or 3 (1 = landscape, 3 = landscape flipped)
 #define SCREEN_SWAP_BYTES true // Set to false if colors appear wrong
+// #define TFT_PARALLEL // Uncomment this line if using parallel communication instead of SPI communication
 
 // MicroSD card module Pins
 #define SD_MOSI_PIN 13
