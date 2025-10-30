@@ -1,5 +1,5 @@
 #include "mapper002.h"
-#include "cartridge.h"
+#include "../cartridge.h"
 
 IRAM_ATTR bool Mapper002_cpuRead(Mapper* mapper, uint16_t addr, uint8_t& data)
 {

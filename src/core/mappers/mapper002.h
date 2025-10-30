@@ -1,7 +1,7 @@
 #ifndef MAPPER002_H
 #define MAPPER002_H
 
-#include "mapper.h"
+#include "../mapper.h"
 
 #define MAPPER002_NUM_PRG_BANKS_16K 7
 struct Mapper002_state

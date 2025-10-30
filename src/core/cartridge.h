@@ -6,11 +6,11 @@
 #include <vector>
 
 #include "mapper.h"
-#include "mapper000.h"
-#include "mapper001.h"
-#include "mapper002.h"
-#include "mapper003.h"
-#include "mapper004.h"
+#include "mappers/mapper000.h"
+#include "mappers/mapper001.h"
+#include "mappers/mapper002.h"
+#include "mappers/mapper003.h"
+#include "mappers/mapper004.h"
 
 class Bus;
 class Cartridge

@@ -1,7 +1,7 @@
 #ifndef MAPPER003_H
 #define MAPPER003_H
 
-#include "mapper.h"
+#include "../mapper.h"
 
 #define MAPPER003_NUM_CHR_BANKS_8K 16
 struct Mapper003_state

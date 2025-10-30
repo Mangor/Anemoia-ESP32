@@ -1,7 +1,7 @@
 #ifndef MAPPER004_H
 #define MAPPER004_H
 
-#include "mapper.h"
+#include "../mapper.h"
 
 #define MAPPER004_NUM_PRG_BANKS_8K 18
 #define MAPPER004_NUM_CHR_BANKS_1K 26

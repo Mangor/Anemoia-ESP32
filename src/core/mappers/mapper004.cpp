@@ -1,5 +1,5 @@
 #include "mapper004.h"
-#include "cartridge.h"
+#include "../cartridge.h"
 
 struct Mapper004_state
 {
