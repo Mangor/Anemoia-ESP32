@@ -56,27 +56,27 @@ Feel free to open an issue if a game has glitches or fails to boot.
 - **8 Tactile push buttons**
 
 ### Default Pin Setup
-| Component         | Signal   | ESP32 GPIO Pin |
+| Component         | Signal   | ESP32 Pins     |
 |-------------------|----------|----------------|
-| **MicroSD Module**| MOSI     | 13             |
-|                   | MISO     | 34             |
-|                   | SCLK     | 26             |
+| **MicroSD Module**| MOSI     | GPIO13         |
+|                   | MISO     | GPIO34         |
+|                   | SCLK     | GPIO26         |
 |                   | CS       | GND            |
-| **TFT Display**   | MOSI     | 23             |
+| **TFT Display**   | MOSI     | GPIO23         |
 |                   | MISO     | -1 (N/A)       |
-|                   | SCLK     | 18             |
-|                   | CS       | 4              |
-|                   | DC       | 2              |
+|                   | SCLK     | GPIO18         |
+|                   | CS       | GPIO4          |
+|                   | DC       | GPIO2          |
 |                   | RST      | EN             |
-| **PAM8403**       | L        | 25             |
-| **Buttons**       | A        | 22             |
-|                   | B        | 21             |
-|                   | Left     | 0              |
-|                   | Right    | 12             |
-|                   | Up       | 15             |
-|                   | Down     | 5              |
-|                   | Start    | 32             |
-|                   | Select   | 27             |
+| **PAM8403**       | L        | GPIO25         |
+| **Buttons**       | A        | GPIO22 & GND   |
+|                   | B        | GPIO21 & GND   |
+|                   | Left     | GPIO0 & GND    |
+|                   | Right    | GPIO12 & GND   |
+|                   | Up       | GPIO15 & GND   |
+|                   | Down     | GPIO5 & GND    |
+|                   | Start    | GPIO32 & GND   |
+|                   | Select   | GPIO27 & GND   |
 
 ---
 
