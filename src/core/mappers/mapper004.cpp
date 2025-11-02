@@ -24,6 +24,8 @@ struct Mapper004_state
 
     uint8_t PRG_ROM_bank_mode = 0;
 	uint8_t CHR_ROM_bank_mode = 0;
+	uint16_t PRG_mask = 0;
+	uint16_t CHR_mask = 0;
 
 	static constexpr Cartridge::MIRROR mirror[2] = 
     {
@@ -60,6 +62,7 @@ IRAM_ATTR bool Mapper004_cpuWrite(Mapper* mapper, uint16_t addr, uint8_t data)
 	}
 
 	// Bank select (even address) | Bank data (odd address)
+	uint8_t bank_register[10];
 	switch (addr & 0xE001)
 	{
     case 0x8000:
@@ -71,40 +74,50 @@ IRAM_ATTR bool Mapper004_cpuWrite(Mapper* mapper, uint16_t addr, uint8_t data)
 	case 0x8001:
 		state->bank_register[state->bank_select] = data;
 
+		bank_register[0] = (state->bank_register[0] & 0xFE) & state->CHR_mask;
+		bank_register[1] = (state->bank_register[1] & 0xFE) & state->CHR_mask;
+		bank_register[2] = state->bank_register[2] & state->CHR_mask;
+		bank_register[3] = state->bank_register[3] & state->CHR_mask;
+		bank_register[4] = state->bank_register[4] & state->CHR_mask;
+		bank_register[5] = state->bank_register[5] & state->CHR_mask;
+		bank_register[6] = state->bank_register[6] & state->PRG_mask;
+		bank_register[7] = state->bank_register[7] & state->PRG_mask;
+		bank_register[8] = ((state->bank_register[0] & 0xFE) + 1) & state->CHR_mask;
+		bank_register[9] = ((state->bank_register[1] & 0xFE) + 1) & state->CHR_mask;
 		if (state->CHR_ROM_bank_mode)
 		{
-			state->ptr_CHR_bank_1K[0] = getBank(&state->CHR_cache_1K, state->bank_register[2], Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[1] = getBank(&state->CHR_cache_1K, state->bank_register[3], Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[2] = getBank(&state->CHR_cache_1K, state->bank_register[4], Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[3] = getBank(&state->CHR_cache_1K, state->bank_register[5], Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[4] = getBank(&state->CHR_cache_1K, (state->bank_register[0] & 0xFE), Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[5] = getBank(&state->CHR_cache_1K, (state->bank_register[0] & 0xFE) + 1, Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[6] = getBank(&state->CHR_cache_1K, (state->bank_register[1] & 0xFE), Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[7] = getBank(&state->CHR_cache_1K, (state->bank_register[1] & 0xFE) + 1, Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[0] = getBank(&state->CHR_cache_1K, bank_register[2], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[1] = getBank(&state->CHR_cache_1K, bank_register[3], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[2] = getBank(&state->CHR_cache_1K, bank_register[4], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[3] = getBank(&state->CHR_cache_1K, bank_register[5], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[4] = getBank(&state->CHR_cache_1K, bank_register[0], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[5] = getBank(&state->CHR_cache_1K, bank_register[8], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[6] = getBank(&state->CHR_cache_1K, bank_register[1], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[7] = getBank(&state->CHR_cache_1K, bank_register[9], Mapper::ROM_TYPE::CHR_ROM);
 		}
 		else
 		{
-			state->ptr_CHR_bank_1K[0] = getBank(&state->CHR_cache_1K, (state->bank_register[0] & 0xFE), Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[1] = getBank(&state->CHR_cache_1K, (state->bank_register[0] & 0xFE) + 1, Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[2] = getBank(&state->CHR_cache_1K, (state->bank_register[1] & 0xFE), Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[3] = getBank(&state->CHR_cache_1K, (state->bank_register[1] & 0xFE) + 1, Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[4] = getBank(&state->CHR_cache_1K, state->bank_register[2], Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[5] = getBank(&state->CHR_cache_1K, state->bank_register[3], Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[6] = getBank(&state->CHR_cache_1K, state->bank_register[4], Mapper::ROM_TYPE::CHR_ROM);
-			state->ptr_CHR_bank_1K[7] = getBank(&state->CHR_cache_1K, state->bank_register[5], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[0] = getBank(&state->CHR_cache_1K, bank_register[0], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[1] = getBank(&state->CHR_cache_1K, bank_register[8], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[2] = getBank(&state->CHR_cache_1K, bank_register[1], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[3] = getBank(&state->CHR_cache_1K, bank_register[9], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[4] = getBank(&state->CHR_cache_1K, bank_register[2], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[5] = getBank(&state->CHR_cache_1K, bank_register[3], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[6] = getBank(&state->CHR_cache_1K, bank_register[4], Mapper::ROM_TYPE::CHR_ROM);
+			state->ptr_CHR_bank_1K[7] = getBank(&state->CHR_cache_1K, bank_register[5], Mapper::ROM_TYPE::CHR_ROM);
 		}
 
 		if (state->PRG_ROM_bank_mode)
 		{
 			state->ptr_PRG_bank_8K[0] = getBank(&state->PRG_cache_8K, (state->number_PRG_banks * 2) - 2, Mapper::ROM_TYPE::PRG_ROM);
-			state->ptr_PRG_bank_8K[2] = getBank(&state->PRG_cache_8K, state->bank_register[6] & 0x3F, Mapper::ROM_TYPE::PRG_ROM);
+			state->ptr_PRG_bank_8K[2] = getBank(&state->PRG_cache_8K, bank_register[6], Mapper::ROM_TYPE::PRG_ROM);
 		}
 		else
 		{
-			state->ptr_PRG_bank_8K[0] = getBank(&state->PRG_cache_8K, state->bank_register[6] & 0x3F, Mapper::ROM_TYPE::PRG_ROM);
+			state->ptr_PRG_bank_8K[0] = getBank(&state->PRG_cache_8K, bank_register[6], Mapper::ROM_TYPE::PRG_ROM);
 			state->ptr_PRG_bank_8K[2] = getBank(&state->PRG_cache_8K, (state->number_PRG_banks * 2) - 2, Mapper::ROM_TYPE::PRG_ROM);
 		}
-		state->ptr_PRG_bank_8K[1] = getBank(&state->PRG_cache_8K, state->bank_register[7] & 0x3F, Mapper::ROM_TYPE::PRG_ROM);
+		state->ptr_PRG_bank_8K[1] = getBank(&state->PRG_cache_8K, bank_register[7], Mapper::ROM_TYPE::PRG_ROM);
 		state->ptr_PRG_bank_8K[3] = getBank(&state->PRG_cache_8K, (state->number_PRG_banks * 2) - 1, Mapper::ROM_TYPE::PRG_ROM);
 		break;
 
@@ -196,6 +209,8 @@ void Mapper004_reset(Mapper* mapper)
 	state->IRQ_enable = false;
     state->PRG_ROM_bank_mode = 0;
 	state->CHR_ROM_bank_mode = 0;
+	state->PRG_mask = (state->number_PRG_banks * 2) - 1;
+	state->CHR_mask = (state->number_CHR_banks * 8) - 1;
     state->cart->setMirrorMode(Cartridge::MIRROR::HORIZONTAL);
 }
 
