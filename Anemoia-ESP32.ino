@@ -7,7 +7,7 @@
 #include <WiFi.h>
 #include <vector>
 
-#include "bus.h"
+#include "src/core/bus.h"
 #include "config.h"
 #include "driver/i2s.h"
 #include "esp_wifi.h"
