@@ -18,7 +18,6 @@ struct Mapper004_state
     BankCache CHR_cache_1K;
 
 	uint8_t bank_select = 0x00; // Bank select register
-    uint8_t bank_data = 0x00; // Bank data register
 	uint8_t IRQ_latch = 0x00; // IRQ latch register
 	uint8_t IRQ_counter = 0x00;
 	bool IRQ_enable = false; // IRQ enable/disable register
@@ -116,7 +115,7 @@ IRAM_ATTR bool Mapper004_cpuWrite(Mapper* mapper, uint16_t addr, uint8_t data)
 
 	// IRQ latch (even address) | IRQ reload (odd address)
 	case 0xC000:
-		state->IRQ_latch = data - 1;
+		state->IRQ_latch = data;
 		break;
 	
 	case 0xC001:
@@ -192,7 +191,6 @@ void Mapper004_reset(Mapper* mapper)
 	state->ptr_CHR_bank_1K[7] = getBank(&state->CHR_cache_1K, 0, Mapper::ROM_TYPE::CHR_ROM);
 
 	state->bank_select = 0x00;
-    state->bank_data = 0x00;
 	state->IRQ_latch = 0x00;
 	state->IRQ_counter = 0x00;
 	state->IRQ_enable = false;
@@ -206,7 +204,6 @@ void Mapper004_dumpState(Mapper* mapper, File& state)
     Mapper004_state* s = (Mapper004_state*)mapper->state;
 	state.write(s->bank_register, sizeof(s->bank_register));
 	state.write((uint8_t*)&s->bank_select, sizeof(s->bank_select));
-	state.write((uint8_t*)&s->bank_data, sizeof(s->bank_data));
 	state.write((uint8_t*)&s->IRQ_latch, sizeof(s->IRQ_latch));
 	state.write((uint8_t*)&s->IRQ_counter, sizeof(s->IRQ_counter));
 	state.write((uint8_t*)&s->IRQ_enable, sizeof(s->IRQ_enable));
@@ -230,7 +227,6 @@ void Mapper004_loadState(Mapper* mapper, File& state)
 	Mapper004_state* s = (Mapper004_state*)mapper->state;
 	state.read(s->bank_register, sizeof(s->bank_register));
 	state.read((uint8_t*)&s->bank_select, sizeof(s->bank_select));
-	state.read((uint8_t*)&s->bank_data, sizeof(s->bank_data));
 	state.read((uint8_t*)&s->IRQ_latch, sizeof(s->IRQ_latch));
 	state.read((uint8_t*)&s->IRQ_counter, sizeof(s->IRQ_counter));
 	state.read((uint8_t*)&s->IRQ_enable, sizeof(s->IRQ_enable));
