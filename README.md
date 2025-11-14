@@ -15,8 +15,19 @@
 </p>
 
 <div align="center">
-  <video width="303" height="540" src="https://github.com/user-attachments/assets/883d7ffd-fc07-4092-86b9-3cb508239541"></video>
+  <video width="303" height="540" src="https://github.com/user-attachments/assets/d6822dde-2613-4256-b623-08484ff52037"></video>
 </div>
+
+---
+
+## Sponsor
+
+[<img width="200" height="69" alt="NextPCB" src="https://github.com/user-attachments/assets/f6b9bda9-1b32-4372-8df8-b126741eb5a7">](https://www.nextpcb.com?code=Shim)
+
+
+This project is proudly sponsored by [NextPCB](https://www.nextpcb.com?code=Shim). Their support helps fund the development and continuation of this project, and I'm very grateful to have them as my first ever sponsor. 
+
+Want to make a PCB? NextPCB offers PCB fabrication and assembly services with fast turnaround times and affordable pricing to help bring your electronics projects to the next level.
 
 ---
 
