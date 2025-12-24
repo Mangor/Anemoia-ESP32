@@ -4,6 +4,7 @@
 
 #define READ_PALETTE(x) palette_table[((x) & 0x1F) ^ (((x) & 0x13) == 0x10 ? 0x10 : 0x00)]
 DMA_ATTR uint16_t Ppu2C02::display_buffer[SCANLINE_SIZE * SCANLINES_PER_BUFFER];
+constexpr uint8_t Ppu2C02::palette_mirror[32];
 
 // NTSC Palette in RGB565
 static constexpr DRAM_ATTR uint16_t nes_palette[64] = 
@@ -33,7 +34,7 @@ Ppu2C02::~Ppu2C02()
 
 }
 
-inline IRAM_ATTR void Ppu2C02::ppuWrite(uint16_t addr, uint8_t data)
+inline void Ppu2C02::ppuWrite(uint16_t addr, uint8_t data)
 {
     addr &= 0x3FFF;
     
@@ -49,7 +50,7 @@ inline IRAM_ATTR void Ppu2C02::ppuWrite(uint16_t addr, uint8_t data)
     }
 }
 
-inline IRAM_ATTR uint8_t Ppu2C02::ppuRead(uint16_t addr)
+inline uint8_t Ppu2C02::ppuRead(uint16_t addr)
 {
     uint8_t data = 0x00;
     addr &= 0x3FFF;
@@ -414,6 +415,7 @@ inline void Ppu2C02::renderSprites(uint16_t scanline)
 void Ppu2C02::fakeSpriteHit(uint16_t scanline)
 {
     if (!mask.render_sprite || status.sprite_zero_hit) return;
+    cart->ppuScanline();
 
     uint8_t sprite_size;
     offset = (control.sprite_table_addr ? 0x1000 : 0);
@@ -486,7 +488,6 @@ void Ppu2C02::fakeSpriteHit(uint16_t scanline)
         //     }
         // }
     }
-    cart->ppuScanline();
 }
 
 inline void Ppu2C02::finishScanline(uint16_t scanline)

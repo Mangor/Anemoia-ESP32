@@ -53,12 +53,12 @@ Cpu6502::~Cpu6502()
     
 }   
 
-inline IRAM_ATTR uint8_t Cpu6502::read(uint16_t addr)
+inline uint8_t Cpu6502::read(uint16_t addr)
 {
 	return bus->cpuRead(addr);
 }
 
-inline IRAM_ATTR void Cpu6502::write(uint16_t addr, uint8_t data)
+inline void Cpu6502::write(uint16_t addr, uint8_t data)
 {
 	bus->cpuWrite(addr, data);
 }
@@ -406,7 +406,7 @@ IRAM_ATTR void Cpu6502::apuWrite(uint16_t addr, uint8_t data)
     apu.cpuWrite(addr, data);
 }
 
-inline IRAM_ATTR uint8_t Cpu6502::fetch()
+inline uint8_t Cpu6502::fetch()
 {
 	if (addrmode_implied == false)
 		fetched = read(addr_abs);

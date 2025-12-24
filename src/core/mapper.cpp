@@ -1,7 +1,7 @@
 #include "mapper.h"
 #include "cartridge.h"
 
-IRAM_ATTR void bankInit(BankCache* cache, Bank* banks, uint8_t num_banks, uint32_t bank_size, Cartridge* cart)
+void bankInit(BankCache* cache, Bank* banks, uint8_t num_banks, uint32_t bank_size, Cartridge* cart)
 {
     cache->banks = banks;
     cache->num_banks = num_banks;
