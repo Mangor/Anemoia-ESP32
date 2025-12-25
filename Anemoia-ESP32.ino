@@ -224,7 +224,8 @@ void getNesFiles()
         if (!file.isDirectory())
         {
             std::string filename = file.name();
-            if (filename.ends_with(".nes")) files.push_back(filename);
+            if (filename.rfind(".nes") == filename.size() - 4)
+                files.push_back(filename);
         }
 
         file.close();
@@ -305,6 +306,7 @@ void selectGame()
         if (isDownPressed(CONTROLLER::A) && (selected >= 0 && selected < size))
         {
             cart = new Cartridge(("/" + files[selected]).c_str());
+            std::vector<std::string>().swap(files);
             return;
         }
     }
