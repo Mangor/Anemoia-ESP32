@@ -1076,7 +1076,7 @@ void Cpu6502::IRQ()
         PC = (high_byte << 8) | low_byte;
 
         SP -= 3;
-        cycles = 7;
+        cycles += 7;
     }
 }
 
@@ -1095,7 +1095,7 @@ void Cpu6502::NMI()
     PC = (high_byte << 8) | low_byte;
 
     SP -= 3;
-    cycles = 8;
+    cycles += 8;
 }
 
 void Cpu6502::dumpState(File& state)
