@@ -144,6 +144,7 @@ IRAM_ATTR void Bus::OAM_Write(uint8_t addr, uint8_t data)
 void Bus::insertCartridge(Cartridge* cartridge)
 {
     cart = cartridge;
+    cpu.connectCartridge(cartridge);
     ppu.connectCartridge(cartridge);
     cart->connectBus(this);
 }

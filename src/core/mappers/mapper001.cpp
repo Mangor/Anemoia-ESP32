@@ -39,6 +39,7 @@ struct Mapper001_state
         Cartridge::MIRROR::HORIZONTAL
     };
 };
+constexpr Cartridge::MIRROR Mapper001_state::mirror[4];
 
 IRAM_ATTR bool Mapper001_cpuRead(Mapper* mapper, uint16_t addr, uint8_t& data)
 {
@@ -318,6 +319,7 @@ const MapperVTable Mapper001_vtable =
     Mapper001_ppuRead,
     Mapper001_ppuWrite,
     Mapper001_ppuReadPtr,
+    nullptr,
     nullptr,
     Mapper001_reset,
     Mapper001_dumpState,

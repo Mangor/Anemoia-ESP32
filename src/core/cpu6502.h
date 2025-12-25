@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #include "apu2A03.h"
+#include "cartridge.h"
 
 #define GET_FLAG(f) ((status & (f)) != 0)
 #define SET_FLAG(f, v) (status = (v) ? (status | (f)) : (status & ~(f)))
@@ -47,6 +48,7 @@ public:
     void loadState(File& state);
 
     void connectBus(Bus* n) { bus = n; }
+    void connectCartridge(Cartridge* cartridge) { cart = cartridge; }
 
     // Registers 
     uint8_t A = 0x00; // Accumulator
@@ -64,6 +66,7 @@ public:
     uint16_t temp = 0x0000;
 
 private: 
+    Cartridge* cart = nullptr;
 	Bus* bus = nullptr;
     bool addrmode_implied = false;
     uint8_t additional_cycle1 = 0;

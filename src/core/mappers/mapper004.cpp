@@ -33,6 +33,7 @@ struct Mapper004_state
         Cartridge::MIRROR::HORIZONTAL
     };
 };
+constexpr Cartridge::MIRROR Mapper004_state::mirror[2];
 
 IRAM_ATTR bool Mapper004_cpuRead(Mapper* mapper, uint16_t addr, uint8_t& data)
 {
@@ -273,6 +274,7 @@ const MapperVTable Mapper004_vtable =
     Mapper004_ppuWrite,
     Mapper004_ppuReadPtr,
 	Mapper004_scanline,
+	nullptr,
 	Mapper004_reset,
 	Mapper004_dumpState,
 	Mapper004_loadState,

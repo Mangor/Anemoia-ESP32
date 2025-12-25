@@ -11,6 +11,7 @@
 #include "mappers/mapper002.h"
 #include "mappers/mapper003.h"
 #include "mappers/mapper004.h"
+#include "mappers/mapper069.h"
 
 class Bus;
 class Cartridge
@@ -34,6 +35,7 @@ public:
     uint8_t* ppuReadPtr(uint16_t addr);
 	bool ppuWrite(uint16_t addr, uint8_t data);
     void ppuScanline();
+    void cpuCycle(int cycles);
     void reset();
     
     void loadPRGBank(uint8_t* bank, uint16_t size, uint32_t offset);

@@ -83,7 +83,7 @@ IRAM_ATTR void Cpu6502::clock(int i)
 {
     for (int remaining_cycles = i; remaining_cycles > 0; remaining_cycles--)
     {
-        if (cycles > 0) { cycles--; continue; }
+        if (cycles > 0) { cycles--; cart->cpuCycle(1); continue; }
 
         opcode = read(PC++);
         cycles = instr_cycles[opcode];
@@ -370,12 +370,14 @@ IRAM_ATTR void Cpu6502::clock(int i)
         if (remaining_cycles >= cycles)
         {
             remaining_cycles -= (cycles - 1);
+            cart->cpuCycle(cycles);
             cycles = 0;
             continue;
         }
         else
         {
             cycles -= remaining_cycles;
+            cart->cpuCycle(remaining_cycles);
             return;
         }
     }

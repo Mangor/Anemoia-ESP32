@@ -76,6 +76,7 @@ const MapperVTable Mapper003_vtable =
     Mapper003_ppuWrite,
     Mapper003_ppuReadPtr,
     nullptr,
+    nullptr,
     Mapper003_reset,
     Mapper003_dumpState,
     Mapper003_loadState,

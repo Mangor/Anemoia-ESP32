@@ -50,6 +50,7 @@ Cartridge::Cartridge(const char* filename)
         case 2: mapper = createMapper002(number_PRG_banks, number_CHR_banks, this); break;
         case 3: mapper = createMapper003(number_PRG_banks, number_CHR_banks, this); break;
         case 4: mapper = createMapper004(number_PRG_banks, number_CHR_banks, this); break;
+        case 69: mapper = createMapper069(number_PRG_banks, number_CHR_banks, this); break;
     }
 
     // Calculate ROM CRC32
@@ -99,6 +100,12 @@ void Cartridge::ppuScanline()
 {
     if (mapper.vtable->scanline)
         mapper.vtable->scanline(&mapper);
+}
+
+void Cartridge::cpuCycle(int cycles)
+{
+    if (mapper.vtable->cycle)
+        mapper.vtable->cycle(&mapper, cycles);
 }
 
 void Cartridge::reset()

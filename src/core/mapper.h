@@ -33,6 +33,7 @@ struct MapperVTable
     bool (*ppuWrite)(Mapper* mapper, uint16_t addr, uint8_t data);
     uint8_t* (*ppuReadPtr)(Mapper* mapper, uint16_t addr);
     void (*scanline)(Mapper* mapper);
+    void (*cycle)(Mapper* mapper, int cycles);
     void (*reset)(Mapper* mapper);
     void (*dumpState)(Mapper* mapper, File& state);
     void (*loadState)(Mapper* mapper, File& state);
