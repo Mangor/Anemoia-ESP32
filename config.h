@@ -1,6 +1,11 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// Controller configuration (define one only)
+#define CONTROLLER_GPIO 
+//#define CONTROLLER_NES
+//#define CONTROLLER_SNES
+
 // MicroSD card configuration
 #define SD_FREQ 80000000
 
@@ -24,6 +29,16 @@
 #define DOWN_BUTTON 5
 #define START_BUTTON 32
 #define SELECT_BUTTON 27
+
+// NES controller pins
+#define CONTROLLER_NES_CLK 5
+#define CONTROLLER_NES_LATCH 19
+#define CONTROLLER_NES_DATA 21
+
+// SNES controller pins
+#define CONTROLLER_SNES_CLK 5
+#define CONTROLLER_SNES_LATCH 19
+#define CONTROLLER_SNES_DATA 21
 
 // Sound sample rate
 #define SAMPLE_RATE 44100

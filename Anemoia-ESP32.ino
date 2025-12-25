@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "src/core/bus.h"
+#include "src/controller.h"
 #include "config.h"
 #include "driver/i2s.h"
 #include "esp_wifi.h"
@@ -56,14 +57,7 @@ void setup()
     if(!initSD()) while (true);
 
     // Setup buttons
-    pinMode(A_BUTTON, INPUT_PULLUP);
-    pinMode(B_BUTTON, INPUT_PULLUP);
-    pinMode(LEFT_BUTTON, INPUT_PULLUP);
-    pinMode(RIGHT_BUTTON, INPUT_PULLUP);
-    pinMode(UP_BUTTON, INPUT_PULLUP);
-    pinMode(DOWN_BUTTON, INPUT_PULLUP);
-    pinMode(START_BUTTON, INPUT_PULLUP);
-    pinMode(SELECT_BUTTON, INPUT_PULLUP);
+    initController();
 
     selectGame();
 
@@ -110,25 +104,16 @@ IRAM_ATTR void emulate()
     {
         // Read button input
         nes.controller = 0;
-        if (digitalRead(A_BUTTON)      == LOW) nes.controller |= (Bus::CONTROLLER::A);
-        if (digitalRead(B_BUTTON)      == LOW) nes.controller |= (Bus::CONTROLLER::B);
-        if (digitalRead(SELECT_BUTTON) == LOW) nes.controller |= (Bus::CONTROLLER::Select);
-        if (digitalRead(UP_BUTTON)     == LOW) nes.controller |= (Bus::CONTROLLER::Up);
-        if (digitalRead(DOWN_BUTTON)   == LOW) nes.controller |= (Bus::CONTROLLER::Down);
-        if (digitalRead(LEFT_BUTTON)   == LOW) nes.controller |= (Bus::CONTROLLER::Left);
-        if (digitalRead(RIGHT_BUTTON)  == LOW) nes.controller |= (Bus::CONTROLLER::Right);
-        if (digitalRead(START_BUTTON)  == LOW) 
-        {
-            nes.controller |= (Bus::CONTROLLER::Start);
+        nes.controller = controllerRead();
 
-            // Start + Select opens the pause menu
-            if (digitalRead(SELECT_BUTTON) == LOW) 
-            {
-                vTaskSuspend(apu_task_handle);
-                pauseMenu(&nes);
-                vTaskResume(apu_task_handle);
-                next_frame = esp_timer_get_time() + FRAME_TIME;
-            }
+        // Start + Select opens the pause menu
+        if ((nes.controller & CONTROLLER::Start) && (nes.controller & CONTROLLER::Select)) 
+        {
+            vTaskSuspend(apu_task_handle);
+            pauseMenu(&nes);
+            vTaskResume(apu_task_handle);
+            next_frame = esp_timer_get_time() + FRAME_TIME;
+            nes.controller = 0;
         }
 
         // Generate one frame
@@ -289,7 +274,7 @@ void selectGame()
 
         if (now - last_input_time > delay)
         {
-            if (digitalRead(UP_BUTTON) == LOW) 
+            if (isDownPressed(CONTROLLER::Up)) 
             {
                 selected--;
                 if (selected < 0)
@@ -302,7 +287,7 @@ void selectGame()
                 last_input_time = now;
             }
 
-            if (digitalRead(DOWN_BUTTON) == LOW) 
+            if (isDownPressed(CONTROLLER::Down)) 
             {
                 selected++; 
                 if (selected > (size - 1))
@@ -317,7 +302,7 @@ void selectGame()
             
         }
 
-        if (digitalRead(A_BUTTON) == LOW && (selected >= 0 && selected < size))
+        if (isDownPressed(CONTROLLER::A) && (selected >= 0 && selected < size))
         {
             cart = new Cartridge(("/" + files[selected]).c_str());
             return;
@@ -448,14 +433,14 @@ void pauseMenu(Bus* nes)
         int now = millis();
         if (now - last_input_time > delay)
         {
-            if (digitalRead(UP_BUTTON) == LOW) 
+            if (isDownPressed(CONTROLLER::Up)) 
             {
                 select--;
                 if (select < 0) select = (num_items - 1);
                 last_input_time = now;
             }
 
-            if (digitalRead(DOWN_BUTTON) == LOW) 
+            if (isDownPressed(CONTROLLER::Down)) 
             {
                 select++; 
                 if (select > (num_items - 1)) select = 0;
@@ -463,7 +448,7 @@ void pauseMenu(Bus* nes)
             }
 
             // Resume
-            if (digitalRead(A_BUTTON) == LOW) 
+            if (isDownPressed(CONTROLLER::A)) 
             {
                 switch (select)
                 {
