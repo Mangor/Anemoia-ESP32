@@ -52,7 +52,23 @@ Here are the performance benchmarks for several popular NES games.
 
 ## Compatibility
 
-As of now, Anemoia-ESP32 has implemented five major memory mappers, totalling to around 79% of the entire NES game catalogue. 
+As of now, Anemoia-ESP32 has implemented six major memory mappers:
+* Mapper 0
+* Mapper 1
+* Mapper 2
+* Mapper 3
+* Mapper 4
+* Mapper 69
+
+Totalling to around 79% of the entire NES game catalogue. 
+
+If you'd like to check if a certain game is supported, visit 
+[NesCartDB](https://nescartdb.com/) and search for the game on the 
+right-hand side of the site. Select the specific game version
+and look for the `iNES Mapper` number in the cart properties.
+The game should be supported if the iNES Mapper number is in the list
+of implemented mappers above.
+
 Feel free to open an issue if a game has glitches or fails to boot.
 
 ---
