@@ -73,37 +73,68 @@ Feel free to open an issue if a game has glitches or fails to boot.
 
 ---
 
-## Hardware
+## Hardware Overview
 
-- **ESP32** 38-pin development board
+- **ESP32**
+- **320x240 TFT Display**
 - **MicroSD card module**
-- **320x240 TFT ST7789 LCD**
-- **PAM8403 with a potentiometer**
-- **8 Ohms 0.5W speaker**
-- **8 Tactile push buttons**
+- **Audio Amplifier**
+- **Speaker**
+- **Tactile push buttons/Supported Controller**
 
 ### Default Pin Setup
-| Component         | Signal   | ESP32 Pins     |
-|-------------------|----------|----------------|
-| **MicroSD Module**| MOSI     | GPIO13         |
-|                   | MISO     | GPIO34         |
-|                   | SCLK     | GPIO26         |
-|                   | CS       | GND            |
-| **TFT Display**   | MOSI     | GPIO23         |
-|                   | MISO     | -1 (N/A)       |
-|                   | SCLK     | GPIO18         |
-|                   | CS       | GPIO4          |
-|                   | DC       | GPIO2          |
-|                   | RST      | EN             |
-| **PAM8403**       | L        | GPIO25         |
-| **Buttons**       | A        | GPIO22 & GND   |
-|                   | B        | GPIO21 & GND   |
-|                   | Left     | GPIO0 & GND    |
-|                   | Right    | GPIO12 & GND   |
-|                   | Up       | GPIO15 & GND   |
-|                   | Down     | GPIO5 & GND    |
-|                   | Start    | GPIO32 & GND   |
-|                   | Select   | GPIO27 & GND   |
+## TFT Display
+| Signal   | ESP32 Pins     |
+|----------|----------------|
+| MOSI     | GPIO23         |
+| MISO     | -1 (N/A)       |
+| SCLK     | GPIO18         |
+| CS       | GPIO4          |
+| DC       | GPIO2          |
+| RST      | EN             |
+
+## MicroSD
+| Signal   | ESP32 Pins     |
+|----------|----------------|
+| MOSI     | GPIO13         |
+| MISO     | GPIO34         |
+| SCLK     | GPIO26         |
+| CS       | GND            |
+
+## Audio Amplifier
+| Signal   | ESP32 Pins     |
+|----------|----------------|
+| Input    | GPIO25         |
+              
+## Controller
+There are currently three input methods: GPIO tactile push buttons, NES controller, and SNES controller
+
+GPIO Tactile Push Buttons
+| Signal   | ESP32 Pins     |
+|----------|----------------|
+| A        | GPIO22 & GND   |
+| B        | GPIO21 & GND   |
+| Left     | GPIO0 & GND    |
+| Right    | GPIO12 & GND   |
+| Up       | GPIO15 & GND   |
+| Down     | GPIO5 & GND    |
+| Start    | GPIO32 & GND   |
+| Select   | GPIO27 & GND   |
+<br>
+
+NES/SNES controller
+
+<img width="338" height="187" alt="NesSnesPinout" src="https://github.com/user-attachments/assets/15c992a0-cdb9-4662-91be-3cf615ce1b41"/>
+
+| Signal   | ESP32 Pins     |
+|----------|----------------|
+| CLK      | GPIO5          |
+| Latch    | GPIO19         |
+| Data     | GPI21          |
+<br>
+
+Also connect the power and ground lines if using a controller. 
+Most controllers should work fine from 3.3V power supply. 
 
 ---
 
