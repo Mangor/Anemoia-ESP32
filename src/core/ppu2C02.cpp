@@ -409,13 +409,12 @@ inline void Ppu2C02::renderSprites(uint16_t scanline)
     }
 
     ptr_buffer = buffer_offset;
-    cart->ppuScanline();
 }
 
 void Ppu2C02::fakeSpriteHit(uint16_t scanline)
 {
+    if (mask.render_background || mask.render_sprite) cart->ppuScanline();
     if (!mask.render_sprite || status.sprite_zero_hit) return;
-    cart->ppuScanline();
 
     uint8_t sprite_size;
     offset = (control.sprite_table_addr ? 0x1000 : 0);
@@ -492,6 +491,8 @@ void Ppu2C02::fakeSpriteHit(uint16_t scanline)
 
 inline void Ppu2C02::finishScanline(uint16_t scanline)
 {
+    if (mask.render_background || mask.render_sprite) 
+        cart->ppuScanline();
     memcpy(ptr_display + (scanline_counter * SCANLINE_SIZE), ptr_buffer, SCANLINE_SIZE * sizeof(uint16_t));
     scanline_counter++;
     if (scanline_counter >= SCANLINES_PER_BUFFER) 
